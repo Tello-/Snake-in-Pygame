@@ -1,6 +1,6 @@
 
 import pygame
-DEBUG_MODE_ON = False
+DEBUG_MODE_ON = True
 
 GAME_SPEED = 10
 WINDOW_WIDTH = int(600)

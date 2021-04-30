@@ -28,11 +28,10 @@ class Snake_Engine:
     def Reset(self):
         pass
     def Run(self):
+
         self._drawFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
         self._drawGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
         self._drawSnake()
-        
-
         pygame.display.flip()
 
 
@@ -50,16 +49,23 @@ class Snake_Engine:
                 self._isRunning = False
             elif event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
-                if pressed[pygame.K_UP]:
-                    self._UpPressed()
-                elif pressed[pygame.K_DOWN]:
-                    self._DownPressed()
-                elif pressed[pygame.K_LEFT]:
-                    self._LeftPressed()
-                elif pressed[pygame.K_RIGHT]:
-                    self._RightPressed()
-                elif pressed[pygame.K_ESCAPE]:
+                
+                if pressed[pygame.K_ESCAPE]:
                     running = False
+
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_UP]:
+                    self._UpPressed()
+                elif keys[pygame.K_DOWN]:
+                    self._DownPressed()
+                elif keys[pygame.K_LEFT]:
+                    self._LeftPressed()
+                elif keys[pygame.K_RIGHT]:
+                    self._RightPressed()
+                elif keys[pygame.K_SPACE]:
+                    if config.DEBUG_MODE_ON:
+                        self._currentDir = Direction.NONE
+                
     def _updateState(self):
 
        
@@ -82,6 +88,8 @@ class Snake_Engine:
                 self._MoveSnakeLeft()
             elif self._currentDir == Direction.RIGHT:
                 self._MoveSnakeRight()
+            elif self._currentDir == Direction.NONE:
+                pass
 
     def _render(self):
         self._window.blit(self._GRID_LAYER, (0,0))
@@ -152,12 +160,11 @@ class Snake_Engine:
         if self._pendingGrowth == False:
             self.snake.pop()
     def _checkForBodyHit(self) -> bool:
-        snakeList = []
-        snakeList = self.snake.copy() 
-        head = snakeList.pop()
-        for elem in snakeList:
-            if head == elem:
-                return True
+        ''' Check if given list contains any duplicates '''
+        if len(self.snake) == len(set(self.snake)):
+            return False
+        else:
+            return True
 
     def _spawnApple(self):
         pass
