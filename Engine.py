@@ -16,7 +16,11 @@ class Snake_Engine:
         self._clock = pygame.time.Clock()
         self._GRID_LAYER = pygame.Surface((config.WINDOW_WIDTH,config.WINDOW_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
-        self.snake = [config.DEFAULT_HEAD_COORD, (config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]),(config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]) ]
+        if config.DEBUG_MODE_ON:
+            self.snake = [config.DEFAULT_HEAD_COORD, (config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]),(config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]), (config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]), (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]) ]
+        else:
+            self.snake = [config.DEFAULT_HEAD_COORD]
+        self.apple = [] # coord to hold where apple is at any time
         self._isRunning = True
         self._currentDir = Direction.NONE
         self._pendingGrowth = False
@@ -58,12 +62,9 @@ class Snake_Engine:
                     running = False
     def _updateState(self):
 
-        selfHit = False
+       
         #TODO fix this logic for finding a self hit
-        for ele in self.snake:
-            if ele > 0 and self.snake[0] == self.snake[ele]:
-                selfHit = True 
-                break
+        selfHit = self._checkForBodyHit()
 
         if (self.snake[0][0] < 0) or \
         (self.snake[0][0] >= config.CELLS_ACROSS - 1) or \
@@ -81,22 +82,43 @@ class Snake_Engine:
                 self._MoveSnakeLeft()
             elif self._currentDir == Direction.RIGHT:
                 self._MoveSnakeRight()
+
     def _render(self):
         self._window.blit(self._GRID_LAYER, (0,0))
         self._drawSnake()
         pygame.display.flip()
+
     def _drawFilledBG(self, rgb, surface):
-        pygame.draw.rect(surface, rgb, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+        rectColor = []
+        if config.DEBUG_MODE_ON:
+            rectColor = config.DB_GREEN
+        else:
+            rectColor = rgb
+
+        pygame.draw.rect(surface, rectColor, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+
     def _drawGridOverlay(self,rgb, surface):
+        rectColor = []
+        if config.DEBUG_MODE_ON:
+            rectColor = config.DB_LGREEN
+        else:
+            rectColor = rgb
+
         for i in range(config.CELLS_ACROSS):
             for j in range(config.CELLS_DOWN):
                 x = i * config.CELL_WIDTH
                 y = j * config.CELL_HEIGHT
-                pygame.draw.rect(surface, rgb, [x + config.GRID_CELL_OFFSET_X, y + config.GRID_CELL_OFFSET_Y, config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
+                pygame.draw.rect(surface, rectColor, [x + config.GRID_CELL_OFFSET_X, y + config.GRID_CELL_OFFSET_Y, config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
     def _drawSnake(self):
+        rectColor = []
+        if config.DEBUG_MODE_ON:
+            rectColor = config.DB_BLUE
+        else:
+            rectColor = config.SALMON
+
         for i in range(len(self.snake)):
             pixPos = self._CoordToPixel(self.snake[i])            
-            pygame.draw.rect(self._window, config.SALMON, [pixPos[0], pixPos[1], config.PLAYER_WIDTH, config.PLAYER_HEIGHT], 0)
+            pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], config.PLAYER_WIDTH, config.PLAYER_HEIGHT], 0)
     def _CoordToPixel(self, coord):
         x = coord[0] * config.CELL_WIDTH
         y = coord[1] * config.CELL_HEIGHT
@@ -129,4 +151,13 @@ class Snake_Engine:
         self.snake.insert(0, (self.snake[0][0] + 1, self.snake[0][1]))
         if self._pendingGrowth == False:
             self.snake.pop()
-        
+    def _checkForBodyHit(self) -> bool:
+        snakeList = []
+        snakeList = self.snake.copy() 
+        head = snakeList.pop()
+        for elem in snakeList:
+            if head == elem:
+                return True
+
+    def _spawnApple(self):
+        pass
