@@ -1,6 +1,11 @@
 
+from typing import Text
 import pygame
-DEBUG_MODE_ON = True
+import os
+from sys import platform
+
+
+pygame.init()
 
 GAME_SPEED = 10
 WINDOW_WIDTH = int(600)
@@ -33,9 +38,50 @@ OLD_SNOW = [243, 236, 229]
 FADED_SCHOOLBUS = [254, 203, 95]
 ZORA_SKIN = [99, 204, 200]
 
-# Debug Mode Color Scheme
-DB_GREEN =  [118,166,22]
-DB_BLUE = [31, 101, 242]
-DB_LGREEN = [164, 242, 7]
-DB_ORANGE = [242, 65, 31]
-DB_BRICKRED = [166, 37, 13]
+DEBUG_MODE_ON = True
+if DEBUG_MODE_ON:
+
+    # Debug Mode Color Scheme
+    DB_GREEN =  [118,166,22]
+    DB_BLUE = [31, 101, 242]
+    DB_LGREEN = [164, 242, 7]
+    DB_ORANGE = [242, 65, 31]
+    DB_BRICKRED = [166, 37, 13]
+
+    DEBUG_MODE_MESG = Text("DEBUG MODE ON")
+
+
+
+    USER_OS = None
+    CMD = None
+
+    if platform == "linux" or platform == "linux2":
+        ''' linux'''
+        USER_OS = "linux"
+        CMD = "clear"
+        
+
+    elif platform == "win32":
+        '''Windows...'''
+        USER_OS = "win"
+        CMD = "cls"
+        font = pygame.font.SysFont("", 32)
+            
+
+    def DB_CLEAR():
+        os.system(CMD)
+
+    text = font.render(DEBUG_MODE_MESG, True, DB_BRICKRED)
+    textRect = text.get_rect()
+    textRect.center = (WINDOW_WIDTH / 2,WINDOW_HEIGHT * .9)
+    
+    def DRAW_DEBUG_MSG(surf:pygame.Surface):
+        surf.blit(text, textRect)
+        pygame.display.update()
+
+# :::::::::::::::: END DEBUG RELATED DECLARATIONS :::::::::::::::::::::::
+
+
+
+
+

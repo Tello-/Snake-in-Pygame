@@ -16,15 +16,21 @@ class Snake_Engine:
         self._clock = pygame.time.Clock()
         self._GRID_LAYER = pygame.Surface((config.WINDOW_WIDTH,config.WINDOW_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
-        if config.DEBUG_MODE_ON:
-            self.snake = [config.DEFAULT_HEAD_COORD, (config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]),(config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]), (config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]), (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]) ]
-        else:
-            self.snake = [config.DEFAULT_HEAD_COORD]
         self.apple = [] # coord to hold where apple is at any time
         self._isRunning = True
         self._currentDir = Direction.NONE
         self._pendingGrowth = False
         self._hitDetected = False
+        
+        if config.DEBUG_MODE_ON:
+            self.snake = [config.DEFAULT_HEAD_COORD, \
+                         (config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]), \
+                         (config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]), \
+                         (config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]), \
+                         (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]) ]
+        else:
+            self.snake = [config.DEFAULT_HEAD_COORD]
+
     def Reset(self):
         pass
     def Run(self):
@@ -38,9 +44,13 @@ class Snake_Engine:
         while self._isRunning:
             self._clock.tick(config.GAME_SPEED)
             self._processevents()
-            print("{} , {}".format(self.snake[0][0], self.snake[0][1]))
+            
             self._updateState()
             self._render()
+
+            if config.DEBUG_MODE_ON:
+
+                self._DB_CONSOLE_UPDATE()
             
         pygame.quit()
     def _processevents(self):
@@ -95,6 +105,12 @@ class Snake_Engine:
         self._window.blit(self._GRID_LAYER, (0,0))
         self._drawSnake()
         pygame.display.flip()
+
+    def _DB_CONSOLE_UPDATE(self):
+        config.DB_CLEAR()
+        print("pos: {} , {}".format(self.snake[0][0], self.snake[0][1]))
+        print("len: {}".format(len(self.snake)))
+        config.DRAW_DEBUG_MSG(self._window)
 
     def _drawFilledBG(self, rgb, surface):
         rectColor = []
