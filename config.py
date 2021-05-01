@@ -38,13 +38,25 @@ OLD_SNOW = [243, 236, 229]
 FADED_SCHOOLBUS = [254, 203, 95]
 ZORA_SKIN = [99, 204, 200]
 
-DEBUG_MODE_ON = True
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 if DEBUG_MODE_ON:
+
+    def convertMillis(millis):
+     seconds=(millis/1000)%60
+     minutes=(millis/(1000*60))%60
+     hours=(millis/(1000*60*60))%24
+     return hours, minutes, seconds
 
     # Debug Mode Color Scheme
     DB_GREEN =  [118,166,22]
     DB_BLUE = [31, 101, 242]
-    DB_LGREEN = [164, 242, 7]
+    DB_SNOT = [164, 242, 7]
     DB_ORANGE = [242, 65, 31]
     DB_BRICKRED = [166, 37, 13]
 
@@ -59,6 +71,7 @@ if DEBUG_MODE_ON:
         ''' linux'''
         USER_OS = "linux"
         CMD = "clear"
+        font = pygame.font.SysFont("", 32)
         
 
     elif platform == "win32":
@@ -68,6 +81,11 @@ if DEBUG_MODE_ON:
         font = pygame.font.SysFont("", 32)
             
 
+    EVENT_CALL_COUNTER = int(0)
+    
+    
+    
+    
     def DB_CLEAR():
         os.system(CMD)
 
