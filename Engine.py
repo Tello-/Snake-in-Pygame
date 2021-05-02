@@ -1,3 +1,4 @@
+from math import fabs
 import pygame
 from pygame import event
 from pygame import time
@@ -11,9 +12,9 @@ class Direction(Enum):
     LEFT = 3,
     RIGHT = 4
 
-TIMED_POINT_INCREASE = pygame.USEREVENT + 1
-TIMED_POINT_INCREASE_EVENT = event.Event(TIMED_POINT_INCREASE)
-time.set_timer(TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
+
+
+
 
 class Snake_Engine:
     def __init__(self):
@@ -21,26 +22,28 @@ class Snake_Engine:
         self._clock = pygame.time.Clock()
         self._GRID_LAYER = pygame.Surface((config.WINDOW_WIDTH,config.WINDOW_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
-        self.apple = [] # coord to hold where apple is at once it is known
+        self.apple = None # coord to hold where apple is at once it is known
         self._isRunning = True
+        self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
+        self._TIMED_POINT_INCREASE_EVENT = event.Event(self._TIMED_POINT_INCREASE)
         self._currentDir = Direction.NONE
         self._pendingGrowth = False
         self._hitDetected = False
         self._points = 0
-        self.pointTimerExpired = False
+        self._pointTimerExpired = False
         self._uptime = int(0)
         self._gameover = False
 
-        pygame.event.Event
+        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
         
         if config.DEBUG_MODE_ON:
             self.snake = [config.DEFAULT_HEAD_COORD, \
-                         (config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]), \
-                         (config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]), \
-                         (config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]), \
-                         (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]), \
-                         (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+1), \
-                         (config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+2) ]
+                         [config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]], \
+                         [config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]], \
+                         [config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]], \
+                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]], \
+                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+1], \
+                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+2] ]
             self.pixelPos = []
         else:
             self.snake = [config.DEFAULT_HEAD_COORD]
@@ -79,11 +82,11 @@ class Snake_Engine:
             if event.type == pygame.QUIT:
                 self._isRunning = False
                 break
-            elif event.type == TIMED_POINT_INCREASE_EVENT.type:
-                pointTimerExpired = True     
+            if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
+                self._pointTimerExpired = True     
                     
 
-            elif event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 pressed = pygame.key.get_pressed()
                 
                 if pressed[pygame.K_ESCAPE]:
@@ -105,8 +108,14 @@ class Snake_Engine:
     def _updateState(self):
 
         if self._isRunning:            
+            
+            if self.apple == None:
+                self.apple = self._spawnApple()
 
-            selfHit = self._checkForBodyHit()
+            if self._checkAppleCollision():
+                self._collectApple()
+
+            selfHit = self._checkForSelfBodyHit()
 
             if (self.snake[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
             (self.snake[0][0] >= config.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
@@ -128,16 +137,24 @@ class Snake_Engine:
                     pass
             
             if self._hitDetected:
-                time.set_timer(TIMED_POINT_INCREASE_EVENT, 0)
+                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
                 self._gameover = True
-            elif self.pointTimerExpired:
-                config.EVENT_CALL_COUNTER += 1
+            
+            if self._pointTimerExpired and not self._hitDetected:
+                if config.DEBUG_MODE_ON:
+                    config.EVENT_CALL_COUNTER += 1
                 self._points += 1
-                self.pointTimerExpired = False
+                self._pointTimerExpired = False
+
+            
+             
 
     def _render(self):
         self._window.blit(self._GRID_LAYER, (0,0))
         self._drawSnake()
+        if self.apple != None:
+            if len(self.apple) > 0:
+                self._drawApple()
         pygame.display.flip()
 
     def _DB_CONSOLE_UPDATE(self):
@@ -150,6 +167,9 @@ class Snake_Engine:
         print("Score Events Called: {}".format(config.EVENT_CALL_COUNTER))
         print("Points: {}".format(self._points))
         print("Hit Detected: {}".format(self._hitDetected))
+        if self.apple != None:
+            if len(self.apple) > 0:
+                print("Apple Coord: {},{}".format(self.apple[0], self.apple[1]))
 
         upt = config.convertMillis(self._uptime)
         
@@ -187,10 +207,21 @@ class Snake_Engine:
         for i in range(len(self.snake)):
             pixPos = self._CoordToPixel(self.snake[i])            
             pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], config.PLAYER_WIDTH, config.PLAYER_HEIGHT], 0)
-    def _CoordToPixel(self, coord):
+
+    def _drawApple(self):
+        rectColor = []
+        if config.DEBUG_MODE_ON:
+            rectColor = config.DB_ORANGE
+        else:
+            rectColor = config.FADED_SCHOOLBUS
+
+        pixPos = self._CoordToPixel(self.apple)            
+        pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
+
+    def _CoordToPixel(self, coord:list[int]):
         x = coord[0] * config.CELL_WIDTH
         y = coord[1] * config.CELL_HEIGHT
-        return (x,y)
+        return [x,y]
     def _UpPressed(self):
         if self._currentDir != Direction.DOWN:
             self._currentDir = Direction.UP
@@ -219,12 +250,40 @@ class Snake_Engine:
         self.snake.insert(0, (self.snake[0][0] + 1, self.snake[0][1]))
         if self._pendingGrowth == False:
             self.snake.pop()
-    def _checkForBodyHit(self) -> bool:
+    def _checkForSelfBodyHit(self) -> bool:
         ''' Check if given list contains any duplicates '''
-        if len(self.snake) == len(set(self.snake)):
-            return False
-        else:
-            return True
+        if len(self.snake) >= 5:
+            i = 1
+            while i < len(self.snake):
+                if self.snake[0] == self.snake[i]:
+                    return True
+                else:
+                    return False
+                i += 1
 
-    def _spawnApple(self):
-        pass
+    def _spawnApple(self) -> list[int]:
+        "Finds an open grid space at random and returns the coordinate"
+        genAgain = True
+        newCoord = None
+        while genAgain:
+            newCoord = config.Generate_Random_Coord()
+            if newCoord in self.snake:
+                genAgain = True
+            else:
+                genAgain = False
+        return newCoord
+
+    def _collectApple(self):
+        "Consumes the current apple so to say and triggers a new spawn and a point increment"
+        self._points += 10
+        self.apple.clear()
+        self.apple = None
+        
+    def _checkAppleCollision(self)->bool:
+        if self.apple != None:
+            if len(self.apple) > 0:
+                for elem in self.snake:
+                    if elem[0] == self.apple[0] and elem[1] == self.apple[1]:
+                        return True
+                
+            return False

@@ -3,8 +3,9 @@ from typing import Text
 import pygame
 import os
 from sys import platform
+import random
 
-
+random.seed()
 pygame.init()
 
 GAME_SPEED = 10
@@ -29,7 +30,7 @@ PLAYER_CELL_OFFSET_Y = .05 * CELL_HEIGHT
 PLAYER_WIDTH = .90 * CELL_WIDTH 
 PLAYER_HEIGHT = .90 * CELL_HEIGHT 
 
-DEFAULT_HEAD_COORD = (5,5)
+DEFAULT_HEAD_COORD = [5,5]
 
 # Default Color Scheme
 DARK_BLUE =  [20, 117, 135]
@@ -39,6 +40,11 @@ FADED_SCHOOLBUS = [254, 203, 95]
 ZORA_SKIN = [99, 204, 200]
 
 
+
+def Generate_Random_Coord() -> list[int]:
+    x = random.randint(0, CELLS_ACROSS-1)
+    y = random.randint(0, CELLS_DOWN-1)
+    return [x,y]
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
 DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
