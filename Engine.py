@@ -34,6 +34,7 @@ class Snake_Engine:
         self._uptime = int(0)
         self._gameover = False
 
+
         time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
         
         if config.DEBUG_MODE_ON:
@@ -74,6 +75,7 @@ class Snake_Engine:
                 self._DB_CONSOLE_UPDATE()
         
         while self._gameover and self._isRunning:
+            #This is where I could restart the game or reset the gamestate to start over
             self._processevents()
 
         
@@ -83,7 +85,8 @@ class Snake_Engine:
                 self._isRunning = False
                 break
             if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
-                self._pointTimerExpired = True     
+                self._pointTimerExpired = True
+                
                     
 
             if event.type == pygame.KEYDOWN:
@@ -145,6 +148,8 @@ class Snake_Engine:
                     config.EVENT_CALL_COUNTER += 1
                 self._points += 1
                 self._pointTimerExpired = False
+            
+            
 
             
              
@@ -170,6 +175,7 @@ class Snake_Engine:
         if self.apple != None:
             if len(self.apple) > 0:
                 print("Apple Coord: {},{}".format(self.apple[0], self.apple[1]))
+        print("Pending Growth?: {}".format(self._pendingGrowth))
 
         upt = config.convertMillis(self._uptime)
         
@@ -183,7 +189,7 @@ class Snake_Engine:
         else:
             rectColor = rgb
 
-        pygame.draw.rect(surface, rectColor, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+        pygame.draw.rect(surface, rectColor, [0, 0, config.BG_WIDTH, config.BG_HEIGHT], 0)
 
     def _drawGridOverlay(self,rgb, surface):
         rectColor = []
@@ -238,28 +244,35 @@ class Snake_Engine:
         self.snake.insert(0, (self.snake[0][0], self.snake[0][1] - 1))
         if self._pendingGrowth == False:
             self.snake.pop()
+        else:
+            self._toggleGrow()
     def _MoveSnakeDown(self):
         self.snake.insert(0, (self.snake[0][0], self.snake[0][1] + 1))
         if self._pendingGrowth == False:
             self.snake.pop()
+        else:
+            self._toggleGrow()
     def _MoveSnakeLeft(self):
         self.snake.insert(0, (self.snake[0][0] - 1, self.snake[0][1]))
         if self._pendingGrowth == False:
             self.snake.pop()
+        else:
+            self._toggleGrow()
     def _MoveSnakeRight(self):
         self.snake.insert(0, (self.snake[0][0] + 1, self.snake[0][1]))
         if self._pendingGrowth == False:
             self.snake.pop()
+        else:
+            self._toggleGrow()
     def _checkForSelfBodyHit(self) -> bool:
         ''' Check if given list contains any duplicates '''
         if len(self.snake) >= 5:
             i = 1
             while i < len(self.snake):
-                if self.snake[0] == self.snake[i]:
-                    return True
-                else:
-                    return False
+                if self.snake[0][0] == self.snake[i][0] and self.snake[0][1] == self.snake[i][1]:
+                    return True                
                 i += 1
+            return False
 
     def _spawnApple(self) -> list[int]:
         "Finds an open grid space at random and returns the coordinate"
@@ -278,6 +291,7 @@ class Snake_Engine:
         self._points += 10
         self.apple.clear()
         self.apple = None
+        self._toggleGrow()
         
     def _checkAppleCollision(self)->bool:
         if self.apple != None:
@@ -287,3 +301,11 @@ class Snake_Engine:
                         return True
                 
             return False
+
+    def _toggleGrow(self):
+        if self._pendingGrowth:
+            self._pendingGrowth = False
+        else:
+            self._pendingGrowth = True
+
+   
