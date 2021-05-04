@@ -8,6 +8,26 @@ import random
 random.seed()
 pygame.init()
 
+USER_OS = None
+CMD = None
+
+if platform == "linux" or platform == "linux2":
+    ''' linux'''
+    USER_OS = "linux"
+    CMD = "clear"
+    font = pygame.font.SysFont("", 32)
+    
+
+elif platform == "win32":
+    '''Windows...'''
+    USER_OS = "win"
+    CMD = "cls"
+    font = pygame.font.SysFont("", 32)
+
+
+SCORE_FONT = pygame.font.SysFont("", 64)
+
+
 GAME_SPEED = 10
 WINDOW_WIDTH = int(600)
 WINDOW_HEIGHT = int(800)
@@ -74,21 +94,7 @@ if DEBUG_MODE_ON:
 
 
 
-    USER_OS = None
-    CMD = None
-
-    if platform == "linux" or platform == "linux2":
-        ''' linux'''
-        USER_OS = "linux"
-        CMD = "clear"
-        font = pygame.font.SysFont("", 32)
-        
-
-    elif platform == "win32":
-        '''Windows...'''
-        USER_OS = "win"
-        CMD = "cls"
-        font = pygame.font.SysFont("", 32)
+    
             
 
     EVENT_CALL_COUNTER = int(0)

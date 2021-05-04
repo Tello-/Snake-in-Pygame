@@ -35,9 +35,21 @@ class Snake_Engine:
         self._uptime = int(0)
         self._gameover = False
         self._waitingOnSplash = True
+        self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+        self._score_text_rect = self._score_text.get_rect()
+        self._hasBegun = False
+        self._timerBegun = False
         
 
-        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
+        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .80)
+        
+        
+        
+        
+        
+         #=(WINDOW_WIDTH / 2,WINDOW_HEIGHT * .9)
+
+        
         
         if config.DEBUG_MODE_ON:
             self.snake = [config.DEFAULT_HEAD_COORD, \
@@ -72,7 +84,12 @@ class Snake_Engine:
                 break
 
             self._clock.tick(config.GAME_SPEED)
-            self._uptime = time.get_ticks() 
+            self._uptime = time.get_ticks()
+
+            if self._hasBegun and not self._timerBegun:
+                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
+                self._timerBegun = True
+                
             self._processevents()
             
             self._updateState()
@@ -95,19 +112,27 @@ class Snake_Engine:
             # The extra conditional logic is to combat a glitch that allows you to do a 180 via multi key processing between frames
             if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
                 self._LeftPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
                 self._RightPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_UP] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_DOWN]:
                 self._UpPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_LEFT]:
                 self._DownPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self._isRunning = False
                 break
-            if not self._waitingOnSplash:
+            if not self._waitingOnSplash and self._hasBegun:
                 if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
                     self._pointTimerExpired = True
             
@@ -167,6 +192,8 @@ class Snake_Engine:
             if self.apple != None:
                 if len(self.apple) > 0:
                     self._drawApple()
+            self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+            self._window.blit(self._score_text, self._score_text_rect)
             pygame.display.flip()
 
     def _DB_CONSOLE_UPDATE(self):
