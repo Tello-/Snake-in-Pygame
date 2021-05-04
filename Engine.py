@@ -22,6 +22,7 @@ class Snake_Engine:
         self._clock = pygame.time.Clock()
         self._GRID_LAYER = pygame.Surface((config.WINDOW_WIDTH,config.WINDOW_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
+        self._SPLASH_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         self.apple = None # coord to hold where apple is at once it is known
         self._isRunning = True
         self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
@@ -34,9 +35,21 @@ class Snake_Engine:
         self._uptime = int(0)
         self._gameover = False
         self._waitingOnSplash = True
+        self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+        self._score_text_rect = self._score_text.get_rect()
+        self._hasBegun = False
+        self._timerBegun = False
+        
 
+        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .80)
+        
+        
+        
+        
+        
+         #=(WINDOW_WIDTH / 2,WINDOW_HEIGHT * .9)
 
-        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
+        
         
         if config.DEBUG_MODE_ON:
             self.snake = [config.DEFAULT_HEAD_COORD, \
@@ -57,13 +70,13 @@ class Snake_Engine:
     
     def Run(self):
         self._clock.tick()
-
+        self._initSplash(self._SPLASH_LAYER)
         while self._waitingOnSplash:
             self._splashScreen()
 
         #The following 2 declarations initialize the surface named GRID_LAYER
-        self._drawFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
-        self._drawGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
+        self._initFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
+        self._initGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
 
 
         while not self._gameover:
@@ -71,7 +84,12 @@ class Snake_Engine:
                 break
 
             self._clock.tick(config.GAME_SPEED)
-            self._uptime = time.get_ticks() 
+            self._uptime = time.get_ticks()
+
+            if self._hasBegun and not self._timerBegun:
+                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
+                self._timerBegun = True
+                
             self._processevents()
             
             self._updateState()
@@ -86,15 +104,6 @@ class Snake_Engine:
             self._processevents()
      
     def _processevents(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self._isRunning = False
-                break
-            if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
-                self._pointTimerExpired = True
-            if self._waitingOnSplash:
-                if event.type == pygame.KEYUP:
-                    self._waitingOnSplash = False
 
         if not self._waitingOnSplash:
             # The following keypress code allows for more responsive keys than with the event system
@@ -103,12 +112,35 @@ class Snake_Engine:
             # The extra conditional logic is to combat a glitch that allows you to do a 180 via multi key processing between frames
             if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
                 self._LeftPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
                 self._RightPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_UP] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_DOWN]:
                 self._UpPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
             if keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_LEFT]:
                 self._DownPressed()
+                if not self._hasBegun:
+                    self._hasBegun = True
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self._isRunning = False
+                break
+            if not self._waitingOnSplash and self._hasBegun:
+                if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
+                    self._pointTimerExpired = True
+            
+            if self._waitingOnSplash:
+                if event.type == pygame.KEYUP:
+                    self._waitingOnSplash = False
+
+        
 
     def _updateState(self):
         if not self._waitingOnSplash:
@@ -152,13 +184,16 @@ class Snake_Engine:
                     self._pointTimerExpired = False
     def _render(self):
         if self._waitingOnSplash:
-            pass
+            self._window.blit(self._SPLASH_LAYER, (0,0))
+            pygame.display.flip()
         else:
             self._window.blit(self._GRID_LAYER, (0,0))
             self._drawSnake()
             if self.apple != None:
                 if len(self.apple) > 0:
                     self._drawApple()
+            self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+            self._window.blit(self._score_text, self._score_text_rect)
             pygame.display.flip()
 
     def _DB_CONSOLE_UPDATE(self):
@@ -181,7 +216,7 @@ class Snake_Engine:
         
         print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))
 
-    def _drawFilledBG(self, rgb, surface):
+    def _initFilledBG(self, rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
             rectColor = config.DB_GREEN
@@ -190,7 +225,7 @@ class Snake_Engine:
 
         pygame.draw.rect(surface, rectColor, [0, 0, config.BG_WIDTH, config.BG_HEIGHT], 0)
 
-    def _drawGridOverlay(self,rgb, surface):
+    def _initGridOverlay(self,rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
             rectColor = config.DB_SNOT
@@ -202,6 +237,11 @@ class Snake_Engine:
                 x = i * config.CELL_WIDTH
                 y = j * config.CELL_HEIGHT
                 pygame.draw.rect(surface, rectColor, [x + config.GRID_CELL_OFFSET_X, y + config.GRID_CELL_OFFSET_Y, config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
+
+    def _initSplash(self,surface):
+         pygame.draw.rect(surface, config.ZORA_SKIN, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+
+
     def _drawSnake(self):
         rectColor = []
         if config.DEBUG_MODE_ON:
@@ -308,7 +348,8 @@ class Snake_Engine:
             self._pendingGrowth = True
 
     def _splashScreen(self):
-       self._processevents()
-       self._updateState()
-       self._render()
+        
+        self._processevents()
+        self._updateState()
+        self._render()
 

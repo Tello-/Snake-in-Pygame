@@ -8,6 +8,26 @@ import random
 random.seed()
 pygame.init()
 
+USER_OS = None
+CMD = None
+
+if platform == "linux" or platform == "linux2":
+    ''' linux'''
+    USER_OS = "linux"
+    CMD = "clear"
+    font = pygame.font.SysFont("", 32)
+    
+
+elif platform == "win32":
+    '''Windows...'''
+    USER_OS = "win"
+    CMD = "cls"
+    font = pygame.font.SysFont("", 32)
+
+
+SCORE_FONT = pygame.font.SysFont("", 64)
+
+
 GAME_SPEED = 10
 WINDOW_WIDTH = int(600)
 WINDOW_HEIGHT = int(800)
@@ -34,7 +54,7 @@ PLAYER_CELL_OFFSET_Y = .05 * CELL_HEIGHT
 PLAYER_WIDTH = .85 * CELL_WIDTH 
 PLAYER_HEIGHT = .8 * CELL_HEIGHT 
 
-DEFAULT_HEAD_COORD = [5,5]
+DEFAULT_HEAD_COORD = [10,10]
 
 # Default Color Scheme
 DARK_BLUE =  [20, 117, 135]
@@ -51,7 +71,7 @@ def Generate_Random_Coord() -> list[int]:
     return [x,y]
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
+DEBUG_MODE_ON = False            # SET TRUE TO ENABLE DEBUG MODE #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -74,21 +94,7 @@ if DEBUG_MODE_ON:
 
 
 
-    USER_OS = None
-    CMD = None
-
-    if platform == "linux" or platform == "linux2":
-        ''' linux'''
-        USER_OS = "linux"
-        CMD = "clear"
-        font = pygame.font.SysFont("", 32)
-        
-
-    elif platform == "win32":
-        '''Windows...'''
-        USER_OS = "win"
-        CMD = "cls"
-        font = pygame.font.SysFont("", 32)
+    
             
 
     EVENT_CALL_COUNTER = int(0)
