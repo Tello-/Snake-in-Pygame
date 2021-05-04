@@ -27,10 +27,12 @@ elif platform == "win32":
 
 SCORE_FONT = pygame.font.SysFont("", 64)
 
+LOGO = pygame.image.load('logo.png')
+LOGO_RECT = LOGO.get_rect()
 
 GAME_SPEED = 10
 WINDOW_WIDTH = int(600)
-WINDOW_HEIGHT = int(800)
+WINDOW_HEIGHT = int(700)
 
 BG_WIDTH = int(WINDOW_WIDTH)
 BG_HEIGHT = BG_WIDTH
