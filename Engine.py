@@ -20,8 +20,9 @@ class Snake_Engine:
     def __init__(self):
         self._window = pygame.display.set_mode((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         self._clock = pygame.time.Clock()
-        self._GRID_LAYER = pygame.Surface((config.WINDOW_WIDTH,config.WINDOW_HEIGHT))
+        self._GRID_LAYER = pygame.Surface((config.BG_WIDTH,config.BG_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
+        self._SCORE_PANEL_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.BG_HEIGHT ))
         self._SPLASH_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         self.apple = None # coord to hold where apple is at once it is known
         self._isRunning = True
@@ -41,14 +42,7 @@ class Snake_Engine:
         self._timerBegun = False
         
 
-        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .80)
-        
-        
-        
-        
-        
-         #=(WINDOW_WIDTH / 2,WINDOW_HEIGHT * .9)
-
+        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .90)
         
         
         if config.DEBUG_MODE_ON:
@@ -182,9 +176,11 @@ class Snake_Engine:
                         config.EVENT_CALL_COUNTER += 1
                     self._points += 1
                     self._pointTimerExpired = False
+
     def _render(self):
         if self._waitingOnSplash:
             self._window.blit(self._SPLASH_LAYER, (0,0))
+            
             pygame.display.flip()
         else:
             self._window.blit(self._GRID_LAYER, (0,0))
@@ -192,8 +188,14 @@ class Snake_Engine:
             if self.apple != None:
                 if len(self.apple) > 0:
                     self._drawApple()
+            
+            self._initScorePanel(self._SCORE_PANEL_LAYER)
+            
+            self._window.blit(self._SCORE_PANEL_LAYER, (0, config.BG_HEIGHT))
             self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
             self._window.blit(self._score_text, self._score_text_rect)
+
+            
             pygame.display.flip()
 
     def _DB_CONSOLE_UPDATE(self):
@@ -240,7 +242,10 @@ class Snake_Engine:
 
     def _initSplash(self,surface):
          pygame.draw.rect(surface, config.ZORA_SKIN, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+         surface.blit(config.LOGO, config.LOGO_RECT)
 
+    def _initScorePanel(self, surface):
+        pygame.draw.rect(surface, config.DARK_BLUE, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT - config.BG_HEIGHT])
 
     def _drawSnake(self):
         rectColor = []
