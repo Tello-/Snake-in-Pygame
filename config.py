@@ -34,7 +34,7 @@ PLAYER_CELL_OFFSET_Y = .05 * CELL_HEIGHT
 PLAYER_WIDTH = .85 * CELL_WIDTH 
 PLAYER_HEIGHT = .8 * CELL_HEIGHT 
 
-DEFAULT_HEAD_COORD = [5,5]
+DEFAULT_HEAD_COORD = [10,10]
 
 # Default Color Scheme
 DARK_BLUE =  [20, 117, 135]
@@ -51,7 +51,7 @@ def Generate_Random_Coord() -> list[int]:
     return [x,y]
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
+DEBUG_MODE_ON = False            # SET TRUE TO ENABLE DEBUG MODE #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
