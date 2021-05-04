@@ -51,7 +51,7 @@ def Generate_Random_Coord() -> list[int]:
     return [x,y]
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG_MODE_ON = False            # SET TRUE TO ENABLE DEBUG MODE #
+DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
 
 

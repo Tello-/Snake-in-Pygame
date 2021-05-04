@@ -33,6 +33,7 @@ class Snake_Engine:
         self._pointTimerExpired = False
         self._uptime = int(0)
         self._gameover = False
+        self._waitingOnSplash = True
 
 
         time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000) # Create custom event to be called every 3 seconds
@@ -51,12 +52,18 @@ class Snake_Engine:
 
     def Reset(self):
         pass
+    
+    
+    
     def Run(self):
         self._clock.tick()
+
+        while self._waitingOnSplash:
+            self._splashScreen()
+
+        #The following 2 declarations initialize the surface named GRID_LAYER
         self._drawFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
         self._drawGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
-        self._drawSnake()
-        pygame.display.flip()
 
 
         while not self._gameover:
@@ -77,8 +84,7 @@ class Snake_Engine:
         while self._gameover and self._isRunning:
             #This is where I could restart the game or reset the gamestate to start over
             self._processevents()
-
-        
+     
     def _processevents(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -86,81 +92,74 @@ class Snake_Engine:
                 break
             if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
                 self._pointTimerExpired = True
-                
-                    
+            if self._waitingOnSplash:
+                if event.type == pygame.KEYUP:
+                    self._waitingOnSplash = False
 
-            if event.type == pygame.KEYDOWN:
-                pressed = pygame.key.get_pressed()
-                
-                if pressed[pygame.K_ESCAPE]:
-                    running = False
+        if not self._waitingOnSplash:
+            # The following keypress code allows for more responsive keys than with the event system
+            keys = pygame.key.get_pressed()
+            
+            # The extra conditional logic is to combat a glitch that allows you to do a 180 via multi key processing between frames
+            if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+                self._LeftPressed()
+            if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+                self._RightPressed()
+            if keys[pygame.K_UP] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_DOWN]:
+                self._UpPressed()
+            if keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_LEFT]:
+                self._DownPressed()
 
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_UP]:
-                    self._UpPressed()
-                elif keys[pygame.K_DOWN]:
-                    self._DownPressed()
-                elif keys[pygame.K_LEFT]:
-                    self._LeftPressed()
-                elif keys[pygame.K_RIGHT]:
-                    self._RightPressed()
-                elif keys[pygame.K_SPACE]:
-                    if config.DEBUG_MODE_ON:
-                        self._currentDir = Direction.NONE
-                
     def _updateState(self):
+        if not self._waitingOnSplash:
+            if self._isRunning:            
+                
+                if self.apple == None:
+                    self.apple = self._spawnApple()
 
-        if self._isRunning:            
-            
-            if self.apple == None:
-                self.apple = self._spawnApple()
+                if self._checkAppleCollision():
+                    self._collectApple()
 
-            if self._checkAppleCollision():
-                self._collectApple()
+                selfHit = self._checkForSelfBodyHit()
 
-            selfHit = self._checkForSelfBodyHit()
+                if (self.snake[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
+                (self.snake[0][0] >= config.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
+                (self.snake[0][1] <= 0 and self._currentDir == Direction.UP) or \
+                (self.snake[0][1] >= config.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
+                (selfHit == True):
 
-            if (self.snake[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
-            (self.snake[0][0] >= config.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
-            (self.snake[0][1] <= 0 and self._currentDir == Direction.UP) or \
-            (self.snake[0][1] >= config.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
-            (selfHit == True):
-
-                self._hitDetected = True
-            else:    
-                if self._currentDir == Direction.UP:
-                    self._MoveSnakeUp()
-                elif self._currentDir == Direction.DOWN:
-                    self._MoveSnakeDown()
-                elif self._currentDir == Direction.LEFT:
-                    self._MoveSnakeLeft()
-                elif self._currentDir == Direction.RIGHT:
-                    self._MoveSnakeRight()
-                elif self._currentDir == Direction.NONE:
-                    pass
-            
-            if self._hitDetected:
-                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
-                self._gameover = True
-            
-            if self._pointTimerExpired and not self._hitDetected:
-                if config.DEBUG_MODE_ON:
-                    config.EVENT_CALL_COUNTER += 1
-                self._points += 1
-                self._pointTimerExpired = False
-            
-            
-
-            
-             
-
+                    self._hitDetected = True
+                else:    
+                    if self._currentDir == Direction.UP:
+                        self._MoveSnakeUp()
+                    elif self._currentDir == Direction.DOWN:
+                        self._MoveSnakeDown()
+                    elif self._currentDir == Direction.LEFT:
+                        self._MoveSnakeLeft()
+                    elif self._currentDir == Direction.RIGHT:
+                        self._MoveSnakeRight()
+                    elif self._currentDir == Direction.NONE:
+                        pass
+                
+                if self._hitDetected:
+                    time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
+                    self._gameover = True
+                
+                if self._pointTimerExpired and not self._hitDetected:
+                    if config.DEBUG_MODE_ON:
+                        config.EVENT_CALL_COUNTER += 1
+                    self._points += 1
+                    self._pointTimerExpired = False
     def _render(self):
-        self._window.blit(self._GRID_LAYER, (0,0))
-        self._drawSnake()
-        if self.apple != None:
-            if len(self.apple) > 0:
-                self._drawApple()
-        pygame.display.flip()
+        if self._waitingOnSplash:
+            pass
+        else:
+            self._window.blit(self._GRID_LAYER, (0,0))
+            self._drawSnake()
+            if self.apple != None:
+                if len(self.apple) > 0:
+                    self._drawApple()
+            pygame.display.flip()
 
     def _DB_CONSOLE_UPDATE(self):
         config.DB_CLEAR()
@@ -308,4 +307,8 @@ class Snake_Engine:
         else:
             self._pendingGrowth = True
 
-   
+    def _splashScreen(self):
+       self._processevents()
+       self._updateState()
+       self._render()
+
