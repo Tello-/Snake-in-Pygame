@@ -1,9 +1,13 @@
-#%%
+import config
 
-if __name__ == "__main__":
+class snake:
+    
+    def __init__(self):
+        
+        if config.DEBUG_MODE_ON:
+            self._snake = 
+        else:
+            self._snake = [config.DEFAULT_HEAD_COORD]
 
-    import Engine
-    import config
-
-    Engine.Snake_Engine().Run()
-
+    def snake_coords(self) -> list[list[int]]:
+        return self._snake

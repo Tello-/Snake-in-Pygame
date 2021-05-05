@@ -1,4 +1,3 @@
-from math import fabs
 import pygame
 from pygame import event
 from pygame import time
@@ -46,13 +45,7 @@ class Snake_Engine:
         
         
         if config.DEBUG_MODE_ON:
-            self.snake = [config.DEFAULT_HEAD_COORD, \
-                         [config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]], \
-                         [config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]], \
-                         [config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]], \
-                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]], \
-                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+1], \
-                         [config.DEFAULT_HEAD_COORD[0] + 4, config.DEFAULT_HEAD_COORD[1]+2] ]
+            self.snake = config.DEBUG_SNAKE
             self.pixelPos = []
         else:
             self.snake = [config.DEFAULT_HEAD_COORD]
@@ -179,8 +172,8 @@ class Snake_Engine:
 
     def _render(self):
         if self._waitingOnSplash:
-            self._window.blit(self._SPLASH_LAYER, (0,0))
-            
+            self._initSplash(self._SPLASH_LAYER)
+            self._window.blit(self._SPLASH_LAYER, (0,0))            
             pygame.display.flip()
         else:
             self._window.blit(self._GRID_LAYER, (0,0))
@@ -202,7 +195,7 @@ class Snake_Engine:
         config.DB_CLEAR()
         print("pos: {} , {}".format(self.snake[0][0], self.snake[0][1]))
         self.pixelPos = self._CoordToPixel(self.snake[0]) 
-        print("Pixel Pos: {}, {}".format(self.pixelPos[0], self.pixelPos[1]))
+        print("Pixel Pos: {}".format(self._CoordToPixel(self.snake[0])))
         print("len: {}".format(len(self.snake)))
         config.DRAW_DEBUG_MSG(self._window)
         print("Score Events Called: {}".format(config.EVENT_CALL_COUNTER))
@@ -241,8 +234,21 @@ class Snake_Engine:
                 pygame.draw.rect(surface, rectColor, [x + config.GRID_CELL_OFFSET_X, y + config.GRID_CELL_OFFSET_Y, config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
 
     def _initSplash(self,surface):
-         pygame.draw.rect(surface, config.ZORA_SKIN, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
-         surface.blit(config.LOGO, config.LOGO_RECT)
+        if config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_1:
+            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_2
+        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_2: 
+            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_3
+        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_3:
+             config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_4
+        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_4:
+            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_5
+        else:
+            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_1
+
+        pygame.draw.rect(surface, config.LOGO_CURRENT_COLOR, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+        surface.blit(config.LOGO_TEXT, config.LOGO_RECT)
+        
+         
 
     def _initScorePanel(self, surface):
         pygame.draw.rect(surface, config.DARK_BLUE, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT - config.BG_HEIGHT])
