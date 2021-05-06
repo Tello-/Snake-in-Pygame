@@ -4,5 +4,6 @@ if __name__ == "__main__":
 
     import Engine
 
-    Engine.Snake_Engine().Run()
+    game = Engine.Snake_Engine()
+    game.Run()
 

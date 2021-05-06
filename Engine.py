@@ -72,12 +72,11 @@ class Snake_Engine:
         self._initFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
         self._initGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
 
-
+        self._clock.tick(config.GAME_SPEED)
         while not self._gameover:
             if not self._isRunning:
                 break
 
-            self._clock.tick(config.GAME_SPEED)
             self._uptime = time.get_ticks()
 
             if self._hasBegun and not self._timerBegun:
@@ -89,9 +88,8 @@ class Snake_Engine:
             self._updateState()
             self._render()
 
-            if config.DEBUG_MODE_ON:
-                
-                self._DB_CONSOLE_UPDATE()
+            if config.DEBUG_MODE_ON:                
+                config._DB_CONSOLE_UPDATE(self)
         
         while self._gameover and self._isRunning:
             #This is where I could restart the game or reset the gamestate to start over
@@ -198,25 +196,7 @@ class Snake_Engine:
             
             pygame.display.flip()
 
-    def _DB_CONSOLE_UPDATE(self):
-        config.DB_CLEAR()
-        print("pos: {} , {}".format(self.snake[0][0], self.snake[0][1]))
-        self.pixelPos = self._CoordToPixel(self.snake[0]) 
-        print("Pixel Pos: {}".format(self._CoordToPixel(self.snake[0])))
-        print("len: {}".format(len(self.snake)))
-        config.DRAW_DEBUG_MSG(self._window)
-        print("Score Events Called: {}".format(config.EVENT_CALL_COUNTER))
-        print("Points: {}".format(self._points))
-        print("Hit Detected: {}".format(self._hitDetected))
-        if self.apple != None:
-            if len(self.apple) > 0:
-                print("Apple Coord: {},{}".format(self.apple[0], self.apple[1]))
-        print("Pending Growth?: {}".format(self._pendingGrowth))
-
-        upt = config.convertMillis(self._uptime)
-        
-        
-        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))
+    
 
     def _initFilledBG(self, rgb, surface):
         rectColor = []

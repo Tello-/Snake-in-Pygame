@@ -142,3 +142,20 @@ if DEBUG_MODE_ON:
 
 
 
+def _DB_CONSOLE_UPDATE(self):
+        DB_CLEAR()
+        print("pos: {} , {}".format(self.snake[0][0], self.snake[0][1]))
+        self.pixelPos = self._CoordToPixel(self.snake[0]) 
+        print("Pixel Pos: {}".format(self._CoordToPixel(self.snake[0])))
+        print("len: {}".format(len(self.snake)))
+        DRAW_DEBUG_MSG(self._window)
+        print("Score Events Called: {}".format(EVENT_CALL_COUNTER))
+        print("Points: {}".format(self._points))
+        print("Hit Detected: {}".format(self._hitDetected))
+        if self.apple != None:
+            if len(self.apple) > 0:
+                print("Apple Coord: {},{}".format(self.apple[0], self.apple[1]))
+        print("Pending Growth?: {}".format(self._pendingGrowth))
+
+        upt = convertMillis(self._uptime)        
+        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))
