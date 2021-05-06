@@ -17,6 +17,11 @@ class Snake:
     def __len__(self) -> int:
         return len(self._snake)
 
+    def __repr__(self):
+        returnStr = ""
+        for elem in self._snake:
+            returnStr += str(elem)
+
     def move(self, dir:Direction) -> bool:
         
         curr = self._curr_dir
