@@ -4,6 +4,7 @@ import pygame
 import os
 from sys import platform
 import random
+from enum import Enum
 
 random.seed()
 pygame.init()
@@ -37,6 +38,7 @@ elif platform == "win32":
     USER_OS = "win"
     CMD = "cls"
     font = pygame.font.SysFont("", 32)
+
 
 
 

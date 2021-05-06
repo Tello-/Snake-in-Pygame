@@ -3,13 +3,10 @@ from pygame import event
 from pygame import time
 import config
 from enum import Enum
+from direction import Direction
+from snake import Snake
 
-class Direction(Enum):
-    NONE = 0,
-    UP = 1,
-    DOWN = 2,
-    LEFT = 3,
-    RIGHT = 4
+
 
 
 
@@ -17,30 +14,40 @@ class Direction(Enum):
 
 class Snake_Engine:
     def __init__(self):
+        
         self._window = pygame.display.set_mode((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         self._clock = pygame.time.Clock()
+        
         self._GRID_LAYER = pygame.Surface((config.BG_WIDTH,config.BG_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((config.PLAYER_WIDTH, config.PLAYER_HEIGHT))
         self._SCORE_PANEL_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.BG_HEIGHT ))
         self._SPLASH_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
+        
+        self._snake = Snake()
         self.apple = None # coord to hold where apple is at once it is known
-        self._isRunning = True
+        
         self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
         self._TIMED_POINT_INCREASE_EVENT = event.Event(self._TIMED_POINT_INCREASE)
+        self._pointTimerExpired = False
+
         self._currentDir = Direction.NONE
+
         self._pendingGrowth = False
         self._hitDetected = False
+
         self._points = 0
-        self._pointTimerExpired = False
+        
         self._uptime = int(0)
+
         self._gameover = False
         self._waitingOnSplash = True
-        self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
-        self._score_text_rect = self._score_text.get_rect()
+        
+        self._isRunning = True
         self._hasBegun = False
         self._timerBegun = False
         
-
+        self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+        self._score_text_rect = self._score_text.get_rect()
         self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .90)
         
         
