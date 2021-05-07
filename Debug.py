@@ -1,4 +1,4 @@
-import config
+"""import config
 import os
 from sys import platform
 from typing import Text
@@ -33,7 +33,7 @@ elif platform == "win32":
     DEBUG_MODE_MESG = Text("DEBUG MODE ON")
 
 
-    DEBUG_SNAKE = [config.DEFAULT_HEAD_COORD, \
+    DEBUG_SNAKE = [DEFAULT_HEAD_COORD, \
                 [config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]], \
                 [config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]], \
                 [config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]], \
@@ -77,4 +77,4 @@ def _DB_CONSOLE_UPDATE(self):
         print("Pending Growth?: {}".format(self._snake._pending_Growth))
 
         upt = convertMillis(self._uptime)        
-        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))
+        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))"""

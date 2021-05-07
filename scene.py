@@ -9,6 +9,8 @@ from config import *
 from color import *
 from pygame import rect
 import Debug
+from direction import Direction
+import snake
 
 
 class Scene:
@@ -74,35 +76,98 @@ class Play_Scene(Scene):
         super().__init__(size, coord)
         self._splash_over = False
 
+        
+
         self.BG_WIDTH = int(WINDOW_WIDTH)
         self.BG_HEIGHT = self.BG_WIDTH
 
-        self.self.CELLS_ACROSS = 21
-        self.self.CELLS_DOWN = 21
+        self.CELLS_ACROSS = 21
+        self.CELLS_DOWN = 21
 
-        self.self.CELL_WIDTH = self.BG_WIDTH / self.self.CELLS_ACROSS
-        self.self.CELL_HEIGHT = self.BG_HEIGHT / self.self.CELLS_DOWN
+        self.CELL_WIDTH = self.BG_WIDTH / self.CELLS_ACROSS
+        self.CELL_HEIGHT = self.BG_HEIGHT / self.CELLS_DOWN
 
-        self.GRID_self.CELL_WIDTH = .90 * self.self.CELL_WIDTH
-        self.GRID_self.CELL_HEIGHT = .90 * self.self.CELL_HEIGHT
+        self.GRID_CELL_WIDTH = .90 * self.CELL_WIDTH
+        self.GRID_CELL_HEIGHT = .90 * self.CELL_HEIGHT
 
 
-        self.self.GRID_CELL_OFFSET_X = .05 * self.self.CELL_WIDTH
-        self.self.GRID_CELL_OFFSET_Y = .05 * self.self.CELL_HEIGHT
+        self.GRID_CELL_OFFSET_X = .05 * self.CELL_WIDTH
+        self.GRID_CELL_OFFSET_Y = .05 * self.CELL_HEIGHT
 
-        self.PLAYER_CELL_OFFSET_X = .05 * self.self.CELL_WIDTH
-        self.PLAYER_CELL_OFFSET_Y = .05 * self.self.CELL_HEIGHT
+        self.PLAYER_CELL_OFFSET_X = .05 * self.CELL_WIDTH
+        self.PLAYER_CELL_OFFSET_Y = .05 * self.CELL_HEIGHT
 
-        self.PLAYER_WIDTH = .85 * self.self.CELL_WIDTH 
-        self.PLAYER_HEIGHT = .8 * self.self.CELL_HEIGHT 
+        self.PLAYER_WIDTH = .85 * self.CELL_WIDTH 
+        self.PLAYER_HEIGHT = .8 * self.CELL_HEIGHT 
 
         self.DEFAULT_HEAD_COORD = [10,10]
-        self.SCORE_FONT = pygame.font.SysFont("", 64)    
+        self.SCORE_FONT = pygame.font.SysFont("", 64) 
+
+        self._points = 0
+        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
+        self._score_text_rect = self._score_text.get_rect()
+        self._score_text_rect.topleft = (WINDOW_WIDTH * .05, WINDOW_HEIGHT * .90)
+        
+
+        self._GRID_LAYER = pygame.Surface((self.BG_WIDTH,self.BG_HEIGHT))
+        self._SNAKE_LAYER = pygame.Surface((self.PLAYER_WIDTH, self.PLAYER_HEIGHT))
+        self._SCORE_PANEL_LAYER = pygame.Surface((WINDOW_WIDTH, self.BG_HEIGHT ))
+
+        self._currentDir = Direction.NONE
+
+        self._pendingGrowth = False
+        self._hitDetected = False
+
+        self._points = 0
+
+        self._snake = snake.Snake(self.DEFAULT_HEAD_COORD)
+        self.apple = None # coord to hold where apple is at once it is known
+
+        self._initFilledBG(ZORA_SKIN, self._GRID_LAYER)
+        self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)   
 
     def _process_input(self, keys):
         pass
     def _update_state(self) ->bool:
-        pass
+        if self._isRunning:            
+            
+            if self.apple == None:
+                self.apple = self._spawnApple()
+
+            if self._checkAppleCollision():
+                self._collectApple()
+
+            selfHit = self._checkForSelfBodyHit()
+
+            if (self._snake.snake_coords()[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
+            (self._snake.snake_coords()[0][0] >= self.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
+            (self._snake.snake_coords()[0][1] <= 0 and self._currentDir == Direction.UP) or \
+            (self._snake.snake_coords()[0][1] >= self.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
+            (selfHit == True):
+
+                self._hitDetected = True
+            else:    
+                if self._currentDir == Direction.UP:
+                    self._snake.move(Direction.UP)
+                elif self._currentDir == Direction.DOWN:
+                    self._snake.move(Direction.DOWN)
+                elif self._currentDir == Direction.LEFT:
+                    self._snake.move(Direction.LEFT)
+                elif self._currentDir == Direction.RIGHT:
+                    self._snake.move(Direction.RIGHT)
+                elif self._currentDir == Direction.NONE:
+                    pass
+            
+            if self._hitDetected:
+                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
+                self._gameover = True
+            
+            if self._pointTimerExpired and not self._hitDetected:
+                if DEBUG_MODE_ON:
+                    Debug.EVENT_CALL_COUNTER += 1
+                
+                self._points += 1
+                self._pointTimerExpired = False
         
     def _render_scene(self, window:Surface):
         self.window.blit(self._GRID_LAYER, (0,0))
@@ -122,32 +187,29 @@ class Play_Scene(Scene):
 
     def _initFilledBG(self, rgb, surface):
         rectColor = []
-        if Debug.DEBUG_MODE_ON:
-            rectColor = DB_GREEN
-        else:
-            rectColor = rgb
+        
+        rectColor = rgb
 
-        #pygame.draw.rect(surface, rectColor, [0, 0, config.BG_WIDTH, config.BG_HEIGHT], 0)
+        pygame.draw.rect(surface, rectColor, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
 
     def _initGridOverlay(self,rgb, surface):
         rectColor = []
-        if Debug.DEBUG_MODE_ON:
-            rectColor = DB_SNOT
-        else:
-            rectColor = rgb
+        rectColor = rgb
 
         for i in range(self.CELLS_ACROSS):
             for j in range(self.CELLS_DOWN):
                 x = i * self.CELL_WIDTH
-                y = j * self.self.CELL_HEIGHT
-                pygame.draw.rect(surface, rectColor, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_self.CELL_HEIGHT], 0)
+                y = j * self.CELL_HEIGHT
+                pygame.draw.rect(surface, rectColor, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
+    def _initScorePanel(self, surface):
+        pygame.draw.rect(surface, DARK_BLUE, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
 
     def _drawSnake(self):
         rectColor = []
         if Debug.DEBUG_MODE_ON:
-            rectColor = color.DB_BLUE
+            rectColor = DB_BLUE
         else:
-            rectColor = color.SALMON
+            rectColor = SALMON
 
         snakeCoords = self._snake.snake_coords()
         for i in range(len(snakeCoords)):
@@ -157,9 +219,9 @@ class Play_Scene(Scene):
     def _drawApple(self):
         rectColor = []
         if DEBUG_MODE_ON:
-            rectColor = color.DB_ORANGE
+            rectColor = DB_ORANGE
         else:
-            rectColor = color.FADED_SCHOOLBUS
+            rectColor = FADED_SCHOOLBUS
 
         pixPos = self._CoordToPixel(self.apple)            
         pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], self.GRID_self.CELL_WIDTH, self.GRID_self.CELL_HEIGHT], 0)
@@ -197,3 +259,31 @@ class Play_Scene(Scene):
         y = random.randint(0, self.CELLS_DOWN-1)
         return [x,y]
     
+    def _CoordToPixel(self, coord:list[int]):
+        x = coord[0] * self.CELL_WIDTH
+        y = coord[1] * self.CELL_HEIGHT
+        return [x,y]
+
+    def _UpPressed(self):
+        if self._currentDir != Direction.DOWN:
+            self._currentDir = Direction.UP
+    def _DownPressed(self):
+        if self._currentDir != Direction.UP:
+            self._currentDir = Direction.DOWN
+    def _LeftPressed(self):
+        if self._currentDir != Direction.RIGHT:
+            self._currentDir = Direction.LEFT
+    def _RightPressed(self):
+       if self._currentDir != Direction.LEFT:
+            self._currentDir = Direction.RIGHT
+
+    def _snakeSelfCollide(self) -> bool:
+        ''' Check if given list contains any duplicates '''
+        snakeCoords = self._snake.snake_coords()
+        if len(snakeCoords) >= 5:
+            i = 1
+            while i < len(snakeCoords):
+                if snakeCoords[0][0] == snakeCoords[i][0] and snakeCoords[0][1] == snakeCoords[i][1]:
+                    return True                
+                i += 1
+            return False

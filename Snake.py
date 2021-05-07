@@ -4,15 +4,13 @@ from direction import Direction
 if config.DEBUG_MODE_ON:
     import Debug
 
-class Snake(list):
+class Snake():
     
-    def __init__(self):
+    def __init__(self, coord:list[int,int]):
         self._HEAD_IDX = 0
         self._curr_dir = None
-        if config.DEBUG_MODE_ON:
-            self._snake = Debug.DEBUG_SNAKE
-        else:
-            self._snake = [config.DEFAULT_HEAD_COORD]
+        
+        self._snake = [coord]
 
         self._pending_Growth = False
 
