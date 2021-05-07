@@ -5,7 +5,8 @@ import config
 from enum import Enum
 from direction import Direction
 from snake import Snake
-
+import color
+from scene import Scene, Splash_Scene
 
 if config.DEBUG_MODE_ON:
     import Debug
@@ -24,14 +25,16 @@ class Snake_Engine:
         self._SCORE_PANEL_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.BG_HEIGHT ))
         self._SPLASH_LAYER = pygame.Surface((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         
-        self._snake = Snake()
-        self.apple = None # coord to hold where apple is at once it is known
+        self._currentScene = Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT),(0,0))
+
+        #self._snake = Snake()
+        #self.apple = None # coord to hold where apple is at once it is known
         
         self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
         self._TIMED_POINT_INCREASE_EVENT = event.Event(self._TIMED_POINT_INCREASE)
         self._pointTimerExpired = False
 
-        self._currentDir = Direction.NONE
+        """self._currentDir = Direction.NONE
 
         self._pendingGrowth = False
         self._hitDetected = False
@@ -39,17 +42,17 @@ class Snake_Engine:
         self._points = 0
         
         self._uptime = int(0)
-
+"""
         self._gameover = False
-        self._waitingOnSplash = True
         
         self._isRunning = True
         self._hasBegun = False
         self._timerBegun = False
+        self._stateFinished = False
         
-        self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+        """self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, color.FADED_SCHOOLBUS)
         self._score_text_rect = self._score_text.get_rect()
-        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .90)
+        self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .90)"""
         
     def Reset(self):
         pass
@@ -58,13 +61,10 @@ class Snake_Engine:
     
     def Run(self):
         self._clock.tick()
-        self._initSplash(self._SPLASH_LAYER)
-        while self._waitingOnSplash:
-            self._splashScreen()
-
+        
         #The following 2 declarations initialize the surface named GRID_LAYER
-        self._initFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
-        self._initGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
+        """self._initFilledBG(color.ZORA_SKIN, self._GRID_LAYER)
+        self._initGridOverlay(color.DARK_BLUE, self._GRID_LAYER)"""
 
         
         while not self._gameover:
@@ -74,62 +74,27 @@ class Snake_Engine:
 
             self._uptime = time.get_ticks()
 
-            if self._hasBegun and not self._timerBegun:
-                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
-                self._timerBegun = True
-                
-            self._processevents()
-            
-            self._updateState()
-            self._render()
+            self._currentScene._process_input(None)
+            self._stateFinished = self._currentScene._update_state()
+            self._currentScene._render_scene(self._window)
 
             if config.DEBUG_MODE_ON:                
                 Debug._DB_CONSOLE_UPDATE(self)
         
-        while self._gameover and self._isRunning:
+        """while self._gameover and self._isRunning:
             #This is where I could restart the game or reset the gamestate to start over
-            self._processevents()
+            self._processevents()"""
      
-    def _processevents(self):
-
-        if not self._waitingOnSplash:
-            # The following keypress code allows for more responsive keys than with the event system
-            keys = pygame.key.get_pressed()
-            
-            # The extra conditional logic is to combat a glitch that allows you to do a 180 via multi key processing between frames
-            if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
-                self._LeftPressed()
-                if not self._hasBegun:
-                    self._hasBegun = True
-            if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
-                self._RightPressed()
-                if not self._hasBegun:
-                    self._hasBegun = True
-            if keys[pygame.K_UP] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_DOWN]:
-                self._UpPressed()
-                if not self._hasBegun:
-                    self._hasBegun = True
-            if keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_LEFT]:
-                self._DownPressed()
-                if not self._hasBegun:
-                    self._hasBegun = True
-
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self._isRunning = False
-                break
-            if not self._waitingOnSplash and self._hasBegun:
-                if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
-                    self._pointTimerExpired = True
-            
-            if self._waitingOnSplash:
-                if event.type == pygame.KEYUP:
-                    self._waitingOnSplash = False
+   # def _processevents(self):
 
         
 
-    def _updateState(self):
+
+        
+
+        
+
+    """ def _updateState(self):
         if not self._waitingOnSplash:
             if self._isRunning:            
                 
@@ -186,7 +151,7 @@ class Snake_Engine:
             self._initScorePanel(self._SCORE_PANEL_LAYER)
             
             self._window.blit(self._SCORE_PANEL_LAYER, (0, config.BG_HEIGHT))
-            self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, config.FADED_SCHOOLBUS)
+            self._score_text = config.SCORE_FONT.render("Points: {}".format(self._points), True, color.FADED_SCHOOLBUS)
             self._window.blit(self._score_text, self._score_text_rect)
 
             
@@ -197,7 +162,7 @@ class Snake_Engine:
     def _initFilledBG(self, rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = Debug.DB_GREEN
+            rectColor = color.DB_GREEN
         else:
             rectColor = rgb
 
@@ -206,7 +171,7 @@ class Snake_Engine:
     def _initGridOverlay(self,rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = Debug.DB_SNOT
+            rectColor = color.DB_SNOT
         else:
             rectColor = rgb
 
@@ -217,31 +182,22 @@ class Snake_Engine:
                 pygame.draw.rect(surface, rectColor, [x + config.GRID_CELL_OFFSET_X, y + config.GRID_CELL_OFFSET_Y, config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
 
     def _initSplash(self,surface):
-        if config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_1:
-            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_2
-        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_2: 
-            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_3
-        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_3:
-             config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_4
-        elif config.LOGO_CURRENT_COLOR == config.LOGO_COLOR_4:
-            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_5
-        else:
-            config.LOGO_CURRENT_COLOR = config.LOGO_COLOR_1
+        
 
-        pygame.draw.rect(surface, config.LOGO_CURRENT_COLOR, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], 0)
+        pygame.draw.rect(surface, config.LOGO_CURRENT_COLOR, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT], True)
         surface.blit(config.LOGO_TEXT, config.LOGO_RECT)
         
          
 
     def _initScorePanel(self, surface):
-        pygame.draw.rect(surface, config.DARK_BLUE, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT - config.BG_HEIGHT])
+        pygame.draw.rect(surface, color.DARK_BLUE, [0, 0, config.WINDOW_WIDTH, config.WINDOW_HEIGHT - config.BG_HEIGHT])
 
     def _drawSnake(self):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = Debug.DB_BLUE
+            rectColor = color.DB_BLUE
         else:
-            rectColor = config.SALMON
+            rectColor = color.SALMON
 
         snakeCoords = self._snake.snake_coords()
         for i in range(len(snakeCoords)):
@@ -251,9 +207,9 @@ class Snake_Engine:
     def _drawApple(self):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = Debug.DB_ORANGE
+            rectColor = color.DB_ORANGE
         else:
-            rectColor = config.FADED_SCHOOLBUS
+            rectColor = color.FADED_SCHOOLBUS
 
         pixPos = self._CoordToPixel(self.apple)            
         pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], config.GRID_CELL_WIDTH, config.GRID_CELL_HEIGHT], 0)
@@ -262,6 +218,7 @@ class Snake_Engine:
         x = coord[0] * config.CELL_WIDTH
         y = coord[1] * config.CELL_HEIGHT
         return [x,y]
+
     def _UpPressed(self):
         if self._currentDir != Direction.DOWN:
             self._currentDir = Direction.UP
@@ -275,7 +232,7 @@ class Snake_Engine:
        if self._currentDir != Direction.LEFT:
             self._currentDir = Direction.RIGHT
 
-    def _checkForSelfBodyHit(self) -> bool:
+    def _snakeSelfCollide(self) -> bool:
         ''' Check if given list contains any duplicates '''
         snakeCoords = self._snake.snake_coords()
         if len(snakeCoords) >= 5:
@@ -319,5 +276,5 @@ class Snake_Engine:
         
         self._processevents()
         self._updateState()
-        self._render()
+        self._render() """
 

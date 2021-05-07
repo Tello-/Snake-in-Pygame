@@ -7,12 +7,14 @@ from enum import Enum
 
 from pygame.mixer import fadeout
 
+import color
+
 random.seed()
 pygame.init()
 
 
 
-GAME_SPEED = 8
+GAME_SPEED = 10
 WINDOW_WIDTH = int(600)
 WINDOW_HEIGHT = int(700)
 
@@ -39,30 +41,8 @@ PLAYER_WIDTH = .85 * CELL_WIDTH
 PLAYER_HEIGHT = .8 * CELL_HEIGHT 
 
 DEFAULT_HEAD_COORD = [10,10]
-
-
-# Default Color Scheme
-DARK_BLUE =  [20, 117, 135]
-SALMON = [250, 126, 92]
-OLD_SNOW = [243, 236, 229]
-FADED_SCHOOLBUS = [254, 203, 95]
-ZORA_SKIN = [99, 204, 200]
-
-LOGO_COLOR_1 = [255,0,0]
-LOGO_COLOR_2 = [255,175,0]
-LOGO_COLOR_3 = [0,255,0]
-LOGO_COLOR_4 = [0,255,175]
-LOGO_COLOR_5 = [0,0,255]
-
 SCORE_FONT = pygame.font.SysFont("", 64)
-LOGO_FONT = pygame.font.Font("alba.super.ttf",75 )
 
-
-
-LOGO_TEXT = LOGO_FONT.render("PySnake", True, [255,0,0])
-LOGO_RECT = LOGO_TEXT.get_rect()
-LOGO_RECT.center = (WINDOW_WIDTH/2, WINDOW_HEIGHT * .20)
-LOGO_CURRENT_COLOR = LOGO_COLOR_1
 
 
 def Generate_Random_Coord() -> list[int]:
@@ -74,7 +54,7 @@ def Generate_Random_Coord() -> list[int]:
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG_MODE_ON = True            # SET TRUE TO ENABLE DEBUG MODE #
+DEBUG_MODE_ON = False            # SET TRUE TO ENABLE DEBUG MODE #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
