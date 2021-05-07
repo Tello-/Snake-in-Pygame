@@ -141,6 +141,26 @@ class Play_Scene(Scene):
             if event.type == pygame.QUIT:
                 quit() # for now for debugging purposes
                 self._shouldQuit = True
+
+        keys = pygame.key.get_pressed()
+            
+        # The extra conditional logic is to combat a glitch that allows you to do a 180 via multi key processing between frames
+        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+            self._LeftPressed()
+            if not self._hasBegun:
+                self._hasBegun = True
+        if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+            self._RightPressed()
+            if not self._hasBegun:
+                self._hasBegun = True
+        if keys[pygame.K_UP] and not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT] and not keys[pygame.K_DOWN]:
+            self._UpPressed()
+            if not self._hasBegun:
+                self._hasBegun = True
+        if keys[pygame.K_DOWN] and not keys[pygame.K_RIGHT] and not keys[pygame.K_UP] and not keys[pygame.K_LEFT]:
+            self._DownPressed()
+            if not self._hasBegun:
+                self._hasBegun = True
             
     def _update_state(self) ->bool:
         if self._isRunning:            
