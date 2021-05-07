@@ -17,10 +17,7 @@ class Scene:
         self._scene_surface = Surface(size)
         self._scene_clock = time.Clock()
         self._shouldQuit = False
-        self._sceneOver = False
-
-
-        
+        self._sceneOver = False        
 
     def _process_input(self, keys):
         pass
@@ -62,9 +59,25 @@ class Splash_Scene(Scene):
         else:
             self.LOGO_CURRENT_COLOR = LOGO_COLOR_1
         return False
+
     def _render_scene(self, window:Surface):
         #pygame.draw.rect(self._scene_surface, self.LOGO_CURRENT_COLOR, self.LOGO_RECT, True)
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, self.LOGO_CURRENT_COLOR)
         self._scene_surface.blit(self.LOGO_TEXT, self.LOGO_RECT)
         window.blit(self._scene_surface, (self.LOGO_RECT.center))
         pygame.display.flip()
+
+
+
+class Play_Scene(Scene):
+    def __init__(self, size:tuple, coord:tuple = (0,0)):
+        super().__init__(size, coord)
+        self._splash_over = False     
+
+    def _process_input(self, keys):
+        pass
+    def _update_state(self) ->bool:
+        pass
+        
+    def _render_scene(self, window:Surface):
+        pass
