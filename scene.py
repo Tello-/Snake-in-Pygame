@@ -2,7 +2,7 @@
 
 from os import truncate
 from typing import Tuple
-from pygame import Surface
+from pygame import Surface, surface
 import pygame
 from pygame import time
 from config import *
@@ -11,6 +11,7 @@ from pygame import rect
 import Debug
 from direction import Direction
 import snake
+from pygame.event import Event
 
 
 class Scene:
@@ -21,7 +22,7 @@ class Scene:
         self._shouldQuit = False
         self._sceneOver = False        
 
-    def _process_input(self, keys):
+    def _process_input(self):
         pass
     def _update_state(self):
         pass
@@ -37,9 +38,11 @@ class Splash_Scene(Scene):
         self.LOGO_FONT = pygame.font.Font("alba.super.ttf",75 )
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, self.LOGO_CURRENT_COLOR)
         self.LOGO_RECT = self.LOGO_TEXT.get_rect()
-        self.LOGO_RECT.topleft = (coord)       
+        self.LOGO_RECT.topleft = (coord)
 
-    def _process_input(self, keys):
+
+
+    def _process_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self._shouldQuit = True
@@ -74,8 +77,11 @@ class Splash_Scene(Scene):
 class Play_Scene(Scene):
     def __init__(self, size:tuple, coord:tuple = (0,0)):
         super().__init__(size, coord)
-        self._splash_over = False
+        self._play_over = False
 
+        self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
+        self._TIMED_POINT_INCREASE_EVENT = Event(self._TIMED_POINT_INCREASE)
+        self._pointTimerExpired = False
         
 
         self.BG_WIDTH = int(WINDOW_WIDTH)
@@ -123,11 +129,21 @@ class Play_Scene(Scene):
         self._snake = snake.Snake(self.DEFAULT_HEAD_COORD)
         self.apple = None # coord to hold where apple is at once it is known
 
+
+        self._gameover = False
+        
+        self._isRunning = True
+        self._hasBegun = False
+
         self._initFilledBG(ZORA_SKIN, self._GRID_LAYER)
         self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)   
 
-    def _process_input(self, keys):
-        pass
+    def _process_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit() # for now for debugging purposes
+                self._shouldQuit = True
+            
     def _update_state(self) ->bool:
         if self._isRunning:            
             
@@ -137,7 +153,7 @@ class Play_Scene(Scene):
             if self._checkAppleCollision():
                 self._collectApple()
 
-            selfHit = self._checkForSelfBodyHit()
+            selfHit = self._snakeSelfCollide()
 
             if (self._snake.snake_coords()[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
             (self._snake.snake_coords()[0][0] >= self.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
@@ -170,16 +186,16 @@ class Play_Scene(Scene):
                 self._pointTimerExpired = False
         
     def _render_scene(self, window:Surface):
-        self.window.blit(self._GRID_LAYER, (0,0))
-        self._drawSnake()
+        window.blit(self._GRID_LAYER, (0,0))
+        self._drawSnake(window)
         if self.apple != None:
             if len(self.apple) > 0:
-                self._drawApple()
+                self._drawApple(window)
             
         self._initScorePanel(self._SCORE_PANEL_LAYER)
         
         window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
-        self._score_text = self._SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
+        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
         window.blit(self._score_text, self._score_text_rect)
 
         
@@ -204,27 +220,21 @@ class Play_Scene(Scene):
     def _initScorePanel(self, surface):
         pygame.draw.rect(surface, DARK_BLUE, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
 
-    def _drawSnake(self):
+    def _drawSnake(self, window:surface):
         rectColor = []
-        if Debug.DEBUG_MODE_ON:
-            rectColor = DB_BLUE
-        else:
-            rectColor = SALMON
+        rectColor = SALMON
 
         snakeCoords = self._snake.snake_coords()
         for i in range(len(snakeCoords)):
             pixPos = self._CoordToPixel(snakeCoords[i])            
-            pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
+            pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
 
-    def _drawApple(self):
+    def _drawApple(self, window:surface):
         rectColor = []
-        if DEBUG_MODE_ON:
-            rectColor = DB_ORANGE
-        else:
-            rectColor = FADED_SCHOOLBUS
+        rectColor = FADED_SCHOOLBUS
 
         pixPos = self._CoordToPixel(self.apple)            
-        pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], self.GRID_self.CELL_WIDTH, self.GRID_self.CELL_HEIGHT], 0)
+        pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
 
     def _spawnApple(self) -> list[int]:
         "Finds an open grid space at random and returns the coordinate"
