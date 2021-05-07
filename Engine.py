@@ -7,7 +7,8 @@ from direction import Direction
 from snake import Snake
 
 
-
+if config.DEBUG_MODE_ON:
+    import Debug
 
 
 
@@ -50,13 +51,6 @@ class Snake_Engine:
         self._score_text_rect = self._score_text.get_rect()
         self._score_text_rect.topleft = (config.WINDOW_WIDTH * .05, config.WINDOW_HEIGHT * .90)
         
-        
-        if config.DEBUG_MODE_ON:
-            self.snake = config.DEBUG_SNAKE
-            self.pixelPos = []
-        else:
-            self.snake = [config.DEFAULT_HEAD_COORD]
-
     def Reset(self):
         pass
     
@@ -72,8 +66,9 @@ class Snake_Engine:
         self._initFilledBG(config.ZORA_SKIN, self._GRID_LAYER)
         self._initGridOverlay(config.DARK_BLUE, self._GRID_LAYER)
 
-        self._clock.tick(config.GAME_SPEED)
+        
         while not self._gameover:
+            self._clock.tick(config.GAME_SPEED)
             if not self._isRunning:
                 break
 
@@ -89,7 +84,7 @@ class Snake_Engine:
             self._render()
 
             if config.DEBUG_MODE_ON:                
-                config._DB_CONSOLE_UPDATE(self)
+                Debug._DB_CONSOLE_UPDATE(self)
         
         while self._gameover and self._isRunning:
             #This is where I could restart the game or reset the gamestate to start over
@@ -146,22 +141,22 @@ class Snake_Engine:
 
                 selfHit = self._checkForSelfBodyHit()
 
-                if (self.snake[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
-                (self.snake[0][0] >= config.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
-                (self.snake[0][1] <= 0 and self._currentDir == Direction.UP) or \
-                (self.snake[0][1] >= config.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
+                if (self._snake.snake_coords()[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
+                (self._snake.snake_coords()[0][0] >= config.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
+                (self._snake.snake_coords()[0][1] <= 0 and self._currentDir == Direction.UP) or \
+                (self._snake.snake_coords()[0][1] >= config.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
                 (selfHit == True):
 
                     self._hitDetected = True
                 else:    
                     if self._currentDir == Direction.UP:
-                        self._MoveSnakeUp()
+                        self._snake.move(Direction.UP)
                     elif self._currentDir == Direction.DOWN:
-                        self._MoveSnakeDown()
+                        self._snake.move(Direction.DOWN)
                     elif self._currentDir == Direction.LEFT:
-                        self._MoveSnakeLeft()
+                        self._snake.move(Direction.LEFT)
                     elif self._currentDir == Direction.RIGHT:
-                        self._MoveSnakeRight()
+                        self._snake.move(Direction.RIGHT)
                     elif self._currentDir == Direction.NONE:
                         pass
                 
@@ -171,7 +166,8 @@ class Snake_Engine:
                 
                 if self._pointTimerExpired and not self._hitDetected:
                     if config.DEBUG_MODE_ON:
-                        config.EVENT_CALL_COUNTER += 1
+                        Debug.EVENT_CALL_COUNTER += 1
+                    
                     self._points += 1
                     self._pointTimerExpired = False
 
@@ -201,7 +197,7 @@ class Snake_Engine:
     def _initFilledBG(self, rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = config.DB_GREEN
+            rectColor = Debug.DB_GREEN
         else:
             rectColor = rgb
 
@@ -210,7 +206,7 @@ class Snake_Engine:
     def _initGridOverlay(self,rgb, surface):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = config.DB_SNOT
+            rectColor = Debug.DB_SNOT
         else:
             rectColor = rgb
 
@@ -243,18 +239,19 @@ class Snake_Engine:
     def _drawSnake(self):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = config.DB_BLUE
+            rectColor = Debug.DB_BLUE
         else:
             rectColor = config.SALMON
 
-        for i in range(len(self.snake)):
-            pixPos = self._CoordToPixel(self.snake[i])            
+        snakeCoords = self._snake.snake_coords()
+        for i in range(len(snakeCoords)):
+            pixPos = self._CoordToPixel(snakeCoords[i])            
             pygame.draw.rect(self._window, rectColor, [pixPos[0], pixPos[1], config.PLAYER_WIDTH, config.PLAYER_HEIGHT], 0)
 
     def _drawApple(self):
         rectColor = []
         if config.DEBUG_MODE_ON:
-            rectColor = config.DB_ORANGE
+            rectColor = Debug.DB_ORANGE
         else:
             rectColor = config.FADED_SCHOOLBUS
 
@@ -277,36 +274,14 @@ class Snake_Engine:
     def _RightPressed(self):
        if self._currentDir != Direction.LEFT:
             self._currentDir = Direction.RIGHT
-    def _MoveSnakeUp(self):
-        self.snake.insert(0, (self.snake[0][0], self.snake[0][1] - 1))
-        if self._pendingGrowth == False:
-            self.snake.pop()
-        else:
-            self._toggleGrow()
-    def _MoveSnakeDown(self):
-        self.snake.insert(0, (self.snake[0][0], self.snake[0][1] + 1))
-        if self._pendingGrowth == False:
-            self.snake.pop()
-        else:
-            self._toggleGrow()
-    def _MoveSnakeLeft(self):
-        self.snake.insert(0, (self.snake[0][0] - 1, self.snake[0][1]))
-        if self._pendingGrowth == False:
-            self.snake.pop()
-        else:
-            self._toggleGrow()
-    def _MoveSnakeRight(self):
-        self.snake.insert(0, (self.snake[0][0] + 1, self.snake[0][1]))
-        if self._pendingGrowth == False:
-            self.snake.pop()
-        else:
-            self._toggleGrow()
+
     def _checkForSelfBodyHit(self) -> bool:
         ''' Check if given list contains any duplicates '''
-        if len(self.snake) >= 5:
+        snakeCoords = self._snake.snake_coords()
+        if len(snakeCoords) >= 5:
             i = 1
-            while i < len(self.snake):
-                if self.snake[0][0] == self.snake[i][0] and self.snake[0][1] == self.snake[i][1]:
+            while i < len(snakeCoords):
+                if snakeCoords[0][0] == snakeCoords[i][0] and snakeCoords[0][1] == snakeCoords[i][1]:
                     return True                
                 i += 1
             return False
@@ -317,7 +292,7 @@ class Snake_Engine:
         newCoord = None
         while genAgain:
             newCoord = config.Generate_Random_Coord()
-            if newCoord in self.snake:
+            if newCoord in self._snake.snake_coords():
                 genAgain = True
             else:
                 genAgain = False
@@ -328,23 +303,18 @@ class Snake_Engine:
         self._points += 10
         self.apple.clear()
         self.apple = None
-        self._toggleGrow()
+        self._snake._toggleGrow()
         
     def _checkAppleCollision(self)->bool:
         if self.apple != None:
             if len(self.apple) > 0:
-                for elem in self.snake:
+                for elem in self._snake.snake_coords():
                     if elem[0] == self.apple[0] and elem[1] == self.apple[1]:
                         return True
                 
             return False
 
-    def _toggleGrow(self):
-        if self._pendingGrowth:
-            self._pendingGrowth = False
-        else:
-            self._pendingGrowth = True
-
+  
     def _splashScreen(self):
         
         self._processevents()
