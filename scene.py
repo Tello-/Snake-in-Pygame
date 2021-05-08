@@ -12,6 +12,7 @@ import Debug
 from direction import Direction
 import snake
 from pygame.event import Event
+from color import Color_Scheme
 
 
 class Scene:
@@ -102,7 +103,7 @@ class Play_Scene(Scene):
 
         self.DEFAULT_HEAD_COORD = [10,10]
         self.SCORE_FONT = pygame.font.SysFont("", 64)
-        self._SCORE_PANEL_COLOR = SCORE_PANEL_COLOR
+        
 
         self._points = 0
         self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
@@ -129,8 +130,8 @@ class Play_Scene(Scene):
         self._hasBegun = False
         self._timerBegun = False
 
-        self._initFilledBG(ZORA_SKIN, self._GRID_LAYER)
-        self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)
+        self._initFilledBG(BG_COLOR, self._GRID_LAYER)
+        self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
 
         
 
@@ -236,23 +237,19 @@ class Play_Scene(Scene):
                 y = j * self.CELL_HEIGHT
                 pygame.draw.rect(surface, rectColor, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
     def _initScorePanel(self, surface):
-        pygame.draw.rect(surface, self._SCORE_PANEL_COLOR, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
+        pygame.draw.rect(surface, SCORE_PANEL_COLOR, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
         self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
     def _drawSnake(self, window:surface):
-        rectColor = []
-        rectColor = SALMON
-
         snakeCoords = self._snake.snake_coords()
         for i in range(len(snakeCoords)):
             pixPos = self._CoordToPixel(snakeCoords[i])            
-            pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
+            pygame.draw.rect(window, SNAKE_COLOR, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
 
     def _drawApple(self, window:surface):
-        rectColor = []
-        rectColor = FADED_SCHOOLBUS
+        
 
         pixPos = self._CoordToPixel(self.apple)            
-        pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
+        pygame.draw.rect(window, APPLE_COLOR, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
 
     def _spawnApple(self) -> list[int]:
         "Finds an open grid space at random and returns the coordinate"
