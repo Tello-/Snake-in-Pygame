@@ -25,7 +25,10 @@ class Snake_Engine:
         self._isRunning = True
         
     def Reset(self):
-        pass
+        self._window.fill([0,0,0])
+        self._scene_queue.clear()
+        self._scene_queue = [(Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))]
+        pygame.display.flip()
     
     def Run(self):
         self._clock.tick()        
@@ -42,4 +45,6 @@ class Snake_Engine:
 
             if self._stateFinished:
                 self._scene_queue.pop(self._currentScene)
-                self._stateFinished = False        
+                self._stateFinished = False
+                if len(self._scene_queue) == 0:
+                    self.Reset()      
