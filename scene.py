@@ -132,11 +132,19 @@ class Play_Scene(Scene):
         
         self._isRunning = True
         self._hasBegun = False
+<<<<<<< HEAD
+=======
+        self._timerBegun = False
+>>>>>>> c9f520ad55e6ee412a7d520b47c535a7311170e7
 
         self._initFilledBG(ZORA_SKIN, self._GRID_LAYER)
         self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)
 
+<<<<<<< HEAD
         time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
+=======
+        
+>>>>>>> c9f520ad55e6ee412a7d520b47c535a7311170e7
 
     def _process_input(self):
         for event in pygame.event.get():
@@ -167,7 +175,13 @@ class Play_Scene(Scene):
                 self._hasBegun = True
             
     def _update_state(self) ->bool:
+<<<<<<< HEAD
             
+=======
+        if self._hasBegun and not self._timerBegun:
+            self._timerBegun = True
+            time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)   
+>>>>>>> c9f520ad55e6ee412a7d520b47c535a7311170e7
         if self.apple == None:
             self.apple = self._spawnApple()
 
