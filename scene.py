@@ -24,9 +24,11 @@ class Scene:
 
     def _process_input(self):
         pass
-    def _update_state(self):
+    def _update_state(self)->bool:
         pass
     def _render_scene(self, window:Surface, dest:tuple):
+        pass
+    def _end_scene(self):
         pass
 
 
@@ -84,25 +86,18 @@ class Play_Scene(Scene):
 
         self.BG_WIDTH = int(WINDOW_WIDTH)
         self.BG_HEIGHT = self.BG_WIDTH
-
         self.CELLS_ACROSS = 21
         self.CELLS_DOWN = 21
-
         self.CELL_WIDTH = self.BG_WIDTH / self.CELLS_ACROSS
         self.CELL_HEIGHT = self.BG_HEIGHT / self.CELLS_DOWN
-
         self.GRID_CELL_WIDTH = .90 * self.CELL_WIDTH
         self.GRID_CELL_HEIGHT = .90 * self.CELL_HEIGHT
-
-
         self.GRID_CELL_OFFSET_X = .05 * self.CELL_WIDTH
         self.GRID_CELL_OFFSET_Y = .05 * self.CELL_HEIGHT
-
         self.PLAYER_CELL_OFFSET_X = .05 * self.CELL_WIDTH
         self.PLAYER_CELL_OFFSET_Y = .05 * self.CELL_HEIGHT
-
         self.PLAYER_WIDTH = .85 * self.CELL_WIDTH 
-        self.PLAYER_HEIGHT = .8 * self.CELL_HEIGHT 
+        self.PLAYER_HEIGHT = .8 * self.CELL_HEIGHT
 
         self.DEFAULT_HEAD_COORD = [10,10]
         self.SCORE_FONT = pygame.font.SysFont("", 64) 
@@ -117,19 +112,17 @@ class Play_Scene(Scene):
         self._SNAKE_LAYER = pygame.Surface((self.PLAYER_WIDTH, self.PLAYER_HEIGHT))
         self._SCORE_PANEL_LAYER = pygame.Surface((WINDOW_WIDTH, self.BG_HEIGHT ))
 
+        self._snake = snake.Snake(self.DEFAULT_HEAD_COORD)
         self._currentDir = Direction.NONE
-
         self._pendingGrowth = False
         self._hitDetected = False
-
+        
         self._points = 0
-
-        self._snake = snake.Snake(self.DEFAULT_HEAD_COORD)
+        
         self.apple = None # coord to hold where apple is at once it is known
 
 
-        self._gameover = False
-        
+        self._gameover = False        
         self._isRunning = True
         self._hasBegun = False
         self._timerBegun = False
@@ -217,13 +210,16 @@ class Play_Scene(Scene):
             
         self._initScorePanel(self._SCORE_PANEL_LAYER)
         
-        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
         self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
+        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
+        
         window.blit(self._score_text, self._score_text_rect)
 
         
         pygame.display.flip()
 
+    def _end_scene(self):
+        pass
     def _initFilledBG(self, rgb, surface):
         rectColor = []
         
@@ -257,7 +253,7 @@ class Play_Scene(Scene):
         rectColor = FADED_SCHOOLBUS
 
         pixPos = self._CoordToPixel(self.apple)            
-        pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
+        pygame.draw.rect(window, rectColor, [pixPos[0], pixPos[1], self.PLAYER_WIDTH, self.PLAYER_HEIGHT], 0)
 
     def _spawnApple(self) -> list[int]:
         "Finds an open grid space at random and returns the coordinate"
