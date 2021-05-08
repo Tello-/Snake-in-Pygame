@@ -134,13 +134,17 @@ class Play_Scene(Scene):
         self._hasBegun = False
 
         self._initFilledBG(ZORA_SKIN, self._GRID_LAYER)
-        self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)   
+        self._initGridOverlay(DARK_BLUE, self._GRID_LAYER)
+
+        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
 
     def _process_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit() # for now for debugging purposes
                 self._shouldQuit = True
+                quit() # for now for debugging purposes
+            if event.type == self._TIMED_POINT_INCREASE_EVENT.type:
+                self._pointTimerExpired = True
 
         keys = pygame.key.get_pressed()
             
@@ -163,45 +167,43 @@ class Play_Scene(Scene):
                 self._hasBegun = True
             
     def _update_state(self) ->bool:
-        if self._isRunning:            
             
-            if self.apple == None:
-                self.apple = self._spawnApple()
+        if self.apple == None:
+            self.apple = self._spawnApple()
 
-            if self._checkAppleCollision():
-                self._collectApple()
+        if self._checkAppleCollision():
+            self._collectApple()
 
-            selfHit = self._snakeSelfCollide()
+        selfHit = self._snakeSelfCollide()
 
-            if (self._snake.snake_coords()[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
-            (self._snake.snake_coords()[0][0] >= self.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
-            (self._snake.snake_coords()[0][1] <= 0 and self._currentDir == Direction.UP) or \
-            (self._snake.snake_coords()[0][1] >= self.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
-            (selfHit == True):
+        if (self._snake.snake_coords()[0][0] <= 0 and self._currentDir == Direction.LEFT) or \
+        (self._snake.snake_coords()[0][0] >= self.CELLS_ACROSS - 1 and self._currentDir == Direction.RIGHT) or \
+        (self._snake.snake_coords()[0][1] <= 0 and self._currentDir == Direction.UP) or \
+        (self._snake.snake_coords()[0][1] >= self.CELLS_DOWN -1 and self._currentDir == Direction.DOWN) or \
+        (selfHit == True):
 
-                self._hitDetected = True
-            else:    
-                if self._currentDir == Direction.UP:
-                    self._snake.move(Direction.UP)
-                elif self._currentDir == Direction.DOWN:
-                    self._snake.move(Direction.DOWN)
-                elif self._currentDir == Direction.LEFT:
-                    self._snake.move(Direction.LEFT)
-                elif self._currentDir == Direction.RIGHT:
-                    self._snake.move(Direction.RIGHT)
-                elif self._currentDir == Direction.NONE:
-                    pass
-            
-            if self._hitDetected:
-                time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
-                self._gameover = True
-            
-            if self._pointTimerExpired and not self._hitDetected:
-                if DEBUG_MODE_ON:
-                    Debug.EVENT_CALL_COUNTER += 1
-                
-                self._points += 1
-                self._pointTimerExpired = False
+            self._hitDetected = True
+        else:    
+            if self._currentDir == Direction.UP:
+                self._snake.move(Direction.UP)
+            elif self._currentDir == Direction.DOWN:
+                self._snake.move(Direction.DOWN)
+            elif self._currentDir == Direction.LEFT:
+                self._snake.move(Direction.LEFT)
+            elif self._currentDir == Direction.RIGHT:
+                self._snake.move(Direction.RIGHT)
+            elif self._currentDir == Direction.NONE:
+                pass
+        
+        if self._hitDetected:
+            time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
+            return True
+        
+        if self._pointTimerExpired and not self._hitDetected:                
+            self._points += 1
+            self._pointTimerExpired = False
+        
+        return False # "state not done"
         
     def _render_scene(self, window:Surface):
         window.blit(self._GRID_LAYER, (0,0))
