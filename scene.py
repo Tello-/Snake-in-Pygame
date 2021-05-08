@@ -13,6 +13,7 @@ from direction import Direction
 import snake
 from pygame.event import Event
 from color import Color_Scheme
+from typing import Text
 
 
 class Scene:
@@ -31,22 +32,38 @@ class Scene:
         pass
     def _end_scene(self):
         pass
+    def _desired_frame_speed(self) -> int:
+        pass
 
 
 class Splash_Scene(Scene):
     def __init__(self, size:tuple, coord:tuple = (0,0)):
         super().__init__(size, coord)
         self._splash_over = False
-        self.LOGO_CURRENT_COLOR = 0 # COLOR 1   
-        self.LOGO_COLORS = [LOGO_COLOR_1, LOGO_COLOR_2, LOGO_COLOR_3, LOGO_COLOR_4, LOGO_COLOR_5]
+        self.LOGO_CURRENT_COLOR = 1 # COLOR 1
         self.LOGO_FONT = pygame.font.Font("alba.super.ttf",75 )
-        self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, self.LOGO_CURRENT_COLOR)
+        self.CONTROL_FONT = pygame.font.Font("alba.super.ttf", 35)
+        self.ANYKEY_FONT = pygame.font.Font("alba.super.ttf", 25)
+        self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
         self.LOGO_RECT = self.LOGO_TEXT.get_rect()
         self.LOGO_RECT.topleft = (coord)
+
+        self.CONTROL_TEXT = self.CONTROL_FONT.render("Turn Snake : WASD", True, [255,255,255] )
+        self.CONTROL_RECT = self.CONTROL_TEXT.get_rect()
+        self.CONTROL_RECT.topleft = (0, WINDOW_HEIGHT * .50)
+
+        self.ANYKEY_TEXT = self.ANYKEY_FONT.render("Any key to continue...", True, [255,255,255] )
+        self.ANYKEY_RECT = self.ANYKEY_TEXT.get_rect()
+        self.ANYKEY_RECT.topleft = (15, WINDOW_HEIGHT * .65)
+
+
+        self.FRAME_SPEED = 8
         
 
 
-        
+    def _desired_frame_speed(self) -> int:
+        return self.FRAME_SPEED
+
     def _process_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -59,18 +76,19 @@ class Splash_Scene(Scene):
         if self._shouldQuit:
             quit()
         
-        if self.LOGO_CURRENT_COLOR != len(self.LOGO_COLORS):
+        if self.LOGO_CURRENT_COLOR != len(LOGO_COLORS):
             self.LOGO_CURRENT_COLOR += 1
         
-        if self.LOGO_CURRENT_COLOR == len(self.LOGO_COLORS):
-            self.LOGO_CURRENT_COLOR = 0
-            self.LOGO_COLORS.reverse()
+        if self.LOGO_CURRENT_COLOR == len(LOGO_COLORS):
+            self.LOGO_CURRENT_COLOR = 1
         return False
 
     def _render_scene(self, window:Surface):
         #pygame.draw.rect(self._scene_surface, self.LOGO_CURRENT_COLOR, self.LOGO_RECT, True)
-        self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, self.LOGO_COLORS[self.LOGO_CURRENT_COLOR])
+        self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
         self._scene_surface.blit(self.LOGO_TEXT, self.LOGO_RECT)
+        self._scene_surface.blit(self.CONTROL_TEXT, self.CONTROL_RECT)
+        self._scene_surface.blit(self.ANYKEY_TEXT, self.ANYKEY_RECT)
         window.blit(self._scene_surface, (self.LOGO_RECT.center))
         pygame.display.flip()
 
@@ -130,11 +148,14 @@ class Play_Scene(Scene):
         self._hasBegun = False
         self._timerBegun = False
 
+        self.FRAME_SPEED = 10
+
         self._initFilledBG(BG_COLOR, self._GRID_LAYER)
         self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
 
         
-
+    def _desired_frame_speed(self) -> int:
+        return self.FRAME_SPEED
     def _process_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

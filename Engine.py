@@ -33,7 +33,7 @@ class Snake_Engine:
     def Run(self):
         self._clock.tick()        
         while self._isRunning:
-            self._clock.tick(config.GAME_SPEED)
+            self._clock.tick(self._scene_queue[self._currentScene]._desired_frame_speed())
             if not self._isRunning:
                 break
 
