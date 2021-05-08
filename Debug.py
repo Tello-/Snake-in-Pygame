@@ -1,8 +1,9 @@
-import config
+"""import config
 import os
 from sys import platform
 from typing import Text
 import pygame
+import color
 
 
 USER_OS = None
@@ -27,17 +28,12 @@ elif platform == "win32":
      hours=(millis/(1000*60*60))%24
      return hours, minutes, seconds
 
-    # Debug Mode Color Scheme
-    DB_GREEN =  [118,166,22]
-    DB_BLUE = [31, 101, 242]
-    DB_SNOT = [164, 242, 7]
-    DB_ORANGE = [242, 65, 31]
-    DB_BRICKRED = [166, 37, 13]
+    
 
     DEBUG_MODE_MESG = Text("DEBUG MODE ON")
 
 
-    DEBUG_SNAKE = [config.DEFAULT_HEAD_COORD, \
+    DEBUG_SNAKE = [DEFAULT_HEAD_COORD, \
                 [config.DEFAULT_HEAD_COORD[0] + 1, config.DEFAULT_HEAD_COORD[1]], \
                 [config.DEFAULT_HEAD_COORD[0] + 2, config.DEFAULT_HEAD_COORD[1]], \
                 [config.DEFAULT_HEAD_COORD[0] + 3, config.DEFAULT_HEAD_COORD[1]], \
@@ -55,7 +51,7 @@ elif platform == "win32":
     def DB_CLEAR():
         os.system(CMD)
 
-    text = font.render(DEBUG_MODE_MESG, True, DB_BRICKRED)
+    text = font.render(DEBUG_MODE_MESG, True, color.DB_BRICKRED)
     textRect = text.get_rect()
     textRect.center = (config.WINDOW_WIDTH / 2,config.WINDOW_HEIGHT * .9)
     
@@ -81,4 +77,4 @@ def _DB_CONSOLE_UPDATE(self):
         print("Pending Growth?: {}".format(self._snake._pending_Growth))
 
         upt = convertMillis(self._uptime)        
-        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))
+        print("Uptime: {}:{}:{}".format(int(upt[0]), int(upt[1]), int(upt[2])))"""
