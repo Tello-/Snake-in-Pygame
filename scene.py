@@ -42,6 +42,7 @@ class Splash_Scene(Scene):
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, self.LOGO_CURRENT_COLOR)
         self.LOGO_RECT = self.LOGO_TEXT.get_rect()
         self.LOGO_RECT.topleft = (coord)
+        
 
 
         
@@ -100,7 +101,8 @@ class Play_Scene(Scene):
         self.PLAYER_HEIGHT = .8 * self.CELL_HEIGHT
 
         self.DEFAULT_HEAD_COORD = [10,10]
-        self.SCORE_FONT = pygame.font.SysFont("", 64) 
+        self.SCORE_FONT = pygame.font.SysFont("", 64)
+        self._SCORE_PANEL_COLOR = SCORE_PANEL_COLOR
 
         self._points = 0
         self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
@@ -208,11 +210,8 @@ class Play_Scene(Scene):
             if len(self.apple) > 0:
                 self._drawApple(window)
             
-        self._initScorePanel(self._SCORE_PANEL_LAYER)
-        
-        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
-        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
-        
+        self._initScorePanel(self._SCORE_PANEL_LAYER)        
+        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))        
         window.blit(self._score_text, self._score_text_rect)
 
         
@@ -237,8 +236,8 @@ class Play_Scene(Scene):
                 y = j * self.CELL_HEIGHT
                 pygame.draw.rect(surface, rectColor, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
     def _initScorePanel(self, surface):
-        pygame.draw.rect(surface, DARK_BLUE, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
-
+        pygame.draw.rect(surface, self._SCORE_PANEL_COLOR, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
+        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
     def _drawSnake(self, window:surface):
         rectColor = []
         rectColor = SALMON
