@@ -1,9 +1,6 @@
 import config
 from direction import Direction
 
-if config.DEBUG_MODE_ON:
-    import Debug
-
 class Snake():
     
     def __init__(self, coord:list[int,int]):

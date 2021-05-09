@@ -1,11 +1,6 @@
 import pygame
-from pygame import event
 from pygame import time
 import config
-from enum import Enum
-from direction import Direction
-from snake import Snake
-import color
 from scene import Splash_Scene, Play_Scene
 
 class Snake_Engine:

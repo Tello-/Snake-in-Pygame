@@ -12,13 +12,6 @@ WINDOW_WIDTH = int(600)
 WINDOW_HEIGHT = int(700)
 
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!
-DEBUG_MODE_ON = False            # SET TRUE TO ENABLE DEBUG MODE #
-# !!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
 
 
 

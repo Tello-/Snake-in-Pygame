@@ -1,19 +1,17 @@
 
 
-from os import truncate
-from typing import Tuple
-from pygame import Surface, surface
+import os
+
 import pygame
+from pygame import Surface, surface
+
 from pygame import time
 from config import *
 from color import *
-from pygame import rect
-import Debug
 from direction import Direction
 import snake
 from pygame.event import Event
 from color import Color_Scheme
-from typing import Text
 
 
 class Scene:
@@ -41,9 +39,11 @@ class Splash_Scene(Scene):
         super().__init__(size, coord)
         self._splash_over = False
         self.LOGO_CURRENT_COLOR = 1 # COLOR 1
-        self.LOGO_FONT = pygame.font.Font("alba.super.ttf",75 )
-        self.CONTROL_FONT = pygame.font.Font("alba.super.ttf", 35)
-        self.ANYKEY_FONT = pygame.font.Font("alba.super.ttf", 25)
+        dirname = os.path.dirname(__file__)
+        logoFontFileName = os.path.join(dirname, 'alba.super.ttf')
+        self.LOGO_FONT = pygame.font.Font(logoFontFileName,75 )
+        self.CONTROL_FONT = pygame.font.Font(logoFontFileName, 35)
+        self.ANYKEY_FONT = pygame.font.Font(logoFontFileName, 25)
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
         self.LOGO_RECT = self.LOGO_TEXT.get_rect()
         self.LOGO_RECT.topleft = (coord)
