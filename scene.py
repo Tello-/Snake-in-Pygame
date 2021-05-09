@@ -41,20 +41,20 @@ class Splash_Scene(Scene):
         self.LOGO_CURRENT_COLOR = 1 # COLOR 1
         dirname = os.path.dirname(__file__)
         logoFontFileName = os.path.join(dirname, 'alba.super.ttf')
-        self.LOGO_FONT = pygame.font.Font(logoFontFileName,75 )
+        self.LOGO_FONT = pygame.font.Font(logoFontFileName,100 )
         self.CONTROL_FONT = pygame.font.Font(logoFontFileName, 35)
         self.ANYKEY_FONT = pygame.font.Font(logoFontFileName, 25)
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
-        self.LOGO_RECT = self.LOGO_TEXT.get_rect()
-        self.LOGO_RECT.topleft = (coord)
+        self.LOGO_RECT = pygame.Rect(55,20, 0, 0)
+        #self.LOGO_RECT.center = (0,0)
 
-        self.CONTROL_TEXT = self.CONTROL_FONT.render("Turn Snake : WASD", True, [255,255,255] )
-        self.CONTROL_RECT = self.CONTROL_TEXT.get_rect()
-        self.CONTROL_RECT.topleft = (0, WINDOW_HEIGHT * .50)
+        self.CONTROL_TEXT = self.CONTROL_FONT.render("Turn Snake : Arrows", True, [255,255,255] )
+        self.CONTROL_RECT = pygame.Rect(80,300, 0, 0)
+        #self.CONTROL_RECT.topleft = (0, WINDOW_HEIGHT * .50)
 
         self.ANYKEY_TEXT = self.ANYKEY_FONT.render("Any key to continue...", True, [255,255,255] )
-        self.ANYKEY_RECT = self.ANYKEY_TEXT.get_rect()
-        self.ANYKEY_RECT.topleft = (15, WINDOW_HEIGHT * .65)
+        self.ANYKEY_RECT = pygame.Rect(120,500, 0, 0)
+        #self.ANYKEY_RECT.topleft = (15, WINDOW_HEIGHT * .65)
 
 
         self.FRAME_SPEED = 8
@@ -146,12 +146,12 @@ class Play_Scene(Scene):
         self._gameover = False        
         self._isRunning = True
         self._hasBegun = False
+        self._timerBegun = False
 
         self.FRAME_SPEED = 10
 
         self._initFilledBG(BG_COLOR, self._GRID_LAYER)
         self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
-        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
 
         
     def _desired_frame_speed(self) -> int:
@@ -185,7 +185,9 @@ class Play_Scene(Scene):
                 self._hasBegun = True
             
     def _update_state(self) ->bool:
-            
+        if self._hasBegun and not self._timerBegun:
+            self._timerBegun = True
+            time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)   
         if self.apple == None:
             self.apple = self._spawnApple()
 
