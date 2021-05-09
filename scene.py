@@ -146,12 +146,15 @@ class Play_Scene(Scene):
         self._gameover = False        
         self._isRunning = True
         self._hasBegun = False
-        self._timerBegun = False
 
         self.FRAME_SPEED = 10
 
+<<<<<<< HEAD
         self._initFilledBG(BG_COLOR, self._GRID_LAYER)
         self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
+=======
+        time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)
+>>>>>>> parent of c9f520a... Fixed the timer issue
 
         
     def _desired_frame_speed(self) -> int:
@@ -185,9 +188,7 @@ class Play_Scene(Scene):
                 self._hasBegun = True
             
     def _update_state(self) ->bool:
-        if self._hasBegun and not self._timerBegun:
-            self._timerBegun = True
-            time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)   
+            
         if self.apple == None:
             self.apple = self._spawnApple()
 
