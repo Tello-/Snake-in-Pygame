@@ -19,7 +19,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/Tello-/Snake-SFML">
-    <img src="https://github.com/Tello-/Snake-SFML/blob/master/Snake/Snake_Logo.png" alt="Logo" width="336" height="112 ">
+    <img src="https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/logo.png" alt="Logo" width="336" height="112 ">
   </a>
 
   <h3 align="center">Snake in Python</h3>
