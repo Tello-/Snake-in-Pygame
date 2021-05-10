@@ -49,9 +49,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Snake+SFML][product-screenshot]
-![Snake+SFML][product-screenshot2]
-![Snake+SFML][product-screenshot3]
+![PySnake][product-screenshot]
+![PySnake][product-screenshot2]
+![PySnake][product-screenshot3]
 
 "Snake in Python" is a clone of the classic game popularized by Nokia. Eat fruit to increase your score. However, as you eat your snake grows and avoiding your growing body becomes more difficult. See how long your snake can grow, YOLO.
 
@@ -130,6 +130,6 @@ Project Link: https://github.com/Tello-/Snake-SFML
 [license-url]: https://github.com/Tello-/Snake-SFML/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/lollisjosh
-[product-screenshot]: https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/TitleScreen.JPG
-[product-screenshot2]: https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/Bones2.JPG
-[product-screenshot3]:https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/HighScoreScreen.JPG
+[product-screenshot]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/splash_screenshot.PNG
+[product-screenshot2]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/play_screenshot.PNG
+[product-screenshot3]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/play_screenshot2.PNG
