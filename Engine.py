@@ -18,6 +18,8 @@ class Snake_Engine:
         self._timerBegun = False
         self._stateFinished = False
         self._isRunning = True
+
+        self._JSON_String = ""
         
     def Reset(self):
         self._window.fill([0,0,0])
@@ -28,6 +30,9 @@ class Snake_Engine:
     def Run(self):
         self._clock.tick()        
         while self._isRunning:
+            """Usually I'd write the physics and graphics clock to be separate from each other. Since this game is 
+            fairly trivial I am just usuing the method provided by pygame to control the framerate of everything. That being said, 
+            I have given each Scene(Game State) the ability to set its own frame speed in order to suit that scene best."""
             self._clock.tick(self._scene_queue[self._currentScene]._desired_frame_speed())
             if not self._isRunning:
                 break
