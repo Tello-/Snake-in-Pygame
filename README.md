@@ -1,24 +1,8 @@
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/Tello-/Snake-SFML">
+  <a href="https://github.com/mshafae-spring-2021/snake-Tello-">
     <img src="https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/logo.png" alt="Logo" width="336" height="112 ">
   </a>
 
@@ -118,24 +102,8 @@ Project Link: https://github.com/Tello-/snake-Tello-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/Tello-/snake-Tello-.svg?style=flat-square
-[contributors-url]: https://github.com/mshafae-spring-2021/snake-Tello-/graphs/contributors
-
-[forks-shield]: https://img.shields.io/github/forks/Tello-/snake-Tello-.svg?style=flat-square
-[forks-url]: https://github.com/mshafae-spring-2021/snake-Tello-/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/Tello-/snake-Tello-.svg?style=flat-square
-[stars-url]: https://github.com/mshafae-spring-2021/snake-Tello-/stargazers
-
-[issues-shield]: https://img.shields.io/github/issues/Tello-/snake-Tello-.svg?style=flat-square
-[issues-url]: https://github.com/mshafae-spring-2021/snake-Tello-/issues
-
-[license-shield]: https://img.shields.io/github/license/Tello-/snake-Tello-.svg?style=flat-square
-[license-url]: https://github.com/Tello-/snake-Tello-/master/LICENSE.txt
 
 
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/lollisjosh
 [product-screenshot]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/splash_screenshot.PNG
 [product-screenshot2]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/play_screenshot.PNG
 [product-screenshot3]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/play_screenshot2.PNG
