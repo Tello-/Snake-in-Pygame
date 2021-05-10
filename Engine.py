@@ -1,7 +1,7 @@
 import pygame
 from pygame import time
 import config
-from scene import Splash_Scene, Play_Scene
+from scene import Scene, Splash_Scene, Play_Scene, GameOver_Scene
 
 class Snake_Engine:
     def __init__(self):
@@ -11,8 +11,8 @@ class Snake_Engine:
         
 
         self._currentScene = 0 #always first spot in scene queue
-        self._scene_queue = [Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT)), Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))]
-        
+        self._scene_queue = [Scene((0,0),(0,0))]#[Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT)), Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))]
+        self.Reset()
         self._uptime = int(0)
         
         self._timerBegun = False
@@ -23,8 +23,10 @@ class Snake_Engine:
         
     def Reset(self):
         self._window.fill([0,0,0])
-        self._scene_queue.clear()
-        self._scene_queue = [(Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))]
+        if len(self._scene_queue) > 0:
+            del self._scene_queue[:]
+        self._scene_queue = [(Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), (Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), (GameOver_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT)))]
+
         pygame.display.flip()
     
     def Run(self):

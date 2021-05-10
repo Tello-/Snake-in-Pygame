@@ -98,6 +98,9 @@ class Splash_Scene(Scene):
 class Play_Scene(Scene):
     def __init__(self, size:tuple, coord:tuple = (0,0)):
         super().__init__(size, coord)
+        
+        self.FRAME_SPEED = 10
+        
         self._play_over = False
 
         self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
@@ -156,7 +159,7 @@ class Play_Scene(Scene):
         self._hasBegun = False
         self._timerBegun = False
 
-        self.FRAME_SPEED = 10
+        
 
         self._initFilledBG(BG_COLOR, self._GRID_LAYER)
         self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
@@ -248,8 +251,6 @@ class Play_Scene(Scene):
         
         pygame.display.flip()
 
-    def _end_scene(self):
-        pass
     def _initFilledBG(self, rgb, surface):
         pygame.draw.rect(surface, rgb, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
 
@@ -340,3 +341,35 @@ class Play_Scene(Scene):
                     return True                
                 i += 1
             return False
+
+class GameOver_Scene(Scene):
+    def __init__(self, size:tuple, coord:tuple = (0,0)):
+        super().__init__(size, coord)
+
+        self.FRAME_SPEED = 10
+        self.BG_WIDTH = size[0]
+        self.BG_HEIGHT = size[1]
+        self._BG_LAYER = pygame.Surface((self.BG_WIDTH, self.BG_HEIGHT))
+
+        self._initGameOverBG(GO_BG_COLOR, self._BG_LAYER)      
+
+    def _process_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self._shouldQuit = True
+                quit() # for now for debugging purposes later encapsulate
+    def _update_state(self)->bool:
+        pass
+    def _render_scene(self, window:Surface):
+        window.blit(self._BG_LAYER, (0,0))
+        pygame.display.flip()
+    def _end_scene(self):
+        pass
+    def _desired_frame_speed(self) -> int:
+        return self.FRAME_SPEED
+
+    def _initGameOverBG(self, rgb, surface):
+        pygame.draw.rect(surface, rgb, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
+
+    def _initGameOverText(self):
+        pass
