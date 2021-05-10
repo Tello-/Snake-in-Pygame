@@ -6,6 +6,7 @@ import pygame
 from pygame import Surface, surface
 
 from pygame import time
+from pygame.constants import WINDOWHIDDEN
 from config import *
 from color import *
 from direction import Direction
@@ -121,12 +122,19 @@ class Play_Scene(Scene):
 
         self.DEFAULT_HEAD_COORD = [10,10]
         self.SCORE_FONT = pygame.font.SysFont("", 64)
+        self.SCORE_SHADOW_FONT = pygame.font.SysFont("", 64)
         
 
         self._points = 0
-        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
+        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, SCORE_TEXT_COLOR)
         self._score_text_rect = self._score_text.get_rect()
         self._score_text_rect.topleft = (WINDOW_WIDTH * .05, WINDOW_HEIGHT * .90)
+
+        self._score_text_shadow = self.SCORE_SHADOW_FONT.render("Points: {}".format(self._points), True, SCORE_TEXT_SHADOW_COLOR)
+        self._score_text_shadow_rect = self._score_text_shadow.get_rect()
+        self._score_text_shadow_rect.update(WINDOW_WIDTH * .05 - 5, WINDOW_HEIGHT * .90, self._score_text_shadow_rect.width, self._score_text_shadow_rect.height)
+        
+        
         
 
         self._GRID_LAYER = pygame.Surface((self.BG_WIDTH,self.BG_HEIGHT))
@@ -233,7 +241,8 @@ class Play_Scene(Scene):
                 self._drawApple(window)
             
         self._initScorePanel(self._SCORE_PANEL_LAYER)        
-        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))        
+        window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
+        window.blit(self._score_text_shadow, self._score_text_shadow_rect)    
         window.blit(self._score_text, self._score_text_rect)
 
         
@@ -242,24 +251,22 @@ class Play_Scene(Scene):
     def _end_scene(self):
         pass
     def _initFilledBG(self, rgb, surface):
-        rectColor = []
-        
-        rectColor = rgb
-
-        pygame.draw.rect(surface, rectColor, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
+        pygame.draw.rect(surface, rgb, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
 
     def _initGridOverlay(self,rgb, surface):
-        rectColor = []
-        rectColor = rgb
-
         for i in range(self.CELLS_ACROSS):
             for j in range(self.CELLS_DOWN):
                 x = i * self.CELL_WIDTH
                 y = j * self.CELL_HEIGHT
-                pygame.draw.rect(surface, rectColor, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
+                pygame.draw.rect(surface, rgb, [x + self.GRID_CELL_OFFSET_X, y + self.GRID_CELL_OFFSET_Y, self.GRID_CELL_WIDTH, self.GRID_CELL_HEIGHT], 0)
+
+
     def _initScorePanel(self, surface):
         pygame.draw.rect(surface, SCORE_PANEL_COLOR, [0, 0, WINDOW_WIDTH, WINDOW_HEIGHT - self.BG_HEIGHT])
-        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, FADED_SCHOOLBUS)
+        self._score_text_shadow = self.SCORE_SHADOW_FONT.render("Points: {}".format(self._points), True, SCORE_TEXT_SHADOW_COLOR)
+        self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, SCORE_TEXT_COLOR)
+
+
     def _drawSnake(self, window:surface):
         snakeCoords = self._snake.snake_coords()
         for i in range(len(snakeCoords)):
