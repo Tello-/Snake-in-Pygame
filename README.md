@@ -1,69 +1,135 @@
-# Snake Game
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-In this exercise, we shall write a [snake game](https://en.wikipedia.org/wiki/Snake_(video_game_genre)). The original game concept comes from the 1976 arcade game [Blockade](https://en.wikipedia.org/wiki/Blockade_(video_game)). We are starting with this well worn game concept because it is a fun game to play, introduces us to a number of key ideas in writing game software, and there exists a wealth of examples to help us get our creativity jump started.
 
-Remember, this assignment is an individual assignment where you are creating your own snake game clone. 
 
-In Blockade, the game is played by two players and each player has a character which navigates a planar world leaving a visible, impenetrable trail behind. The object of the game is to survive longer than the opposing player by not intersecting your player with your opponents trail or your own.
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://github.com/Tello-/Snake-SFML">
+    <img src="https://github.com/Tello-/Snake-SFML/blob/master/Snake/Snake_Logo.png" alt="Logo" width="336" height="112 ">
+  </a>
 
-Since 1976, many variations of the game exist. If you have never played a snake game before, you can try it out on the [web](https://playsnake.org/), on [iOS](https://theappstore.org/search.php?search=snake&platform=software), or on [Android](https://play.google.com/store/search?q=snake&c=apps&hl=en_US&gl=US). On Linux, you can try install a snake game with `apt install nsnake`.
+  <h3 align="center">Snake in Python</h3>
 
-Our snake game shall have the following rules or requirements:
+  <p align="center">
+    Snake clone made with Python and Pygame.    
+</p>
 
-* The game must be written in Python using Pygame.
 
-* The game must be graphical (not a text-based or text console game).
 
-* The game must have at least one player (multi-player is at your discretion).
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
 
-* The game may be controlled from the keyboard, mouse, or joystick.
+- [Table of Contents](#table-of-contents)
+- [About The Project](#about-the-project)
+  - [Built With](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Controls](#controls)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
-* If using a joystick, there must be an option to fallback to a keyboard.
 
-* The objective of the game is to score the highest score possible. Scores are increased by the amount of time the game has been played and by having the player's character eat food.
 
-* The player's character dies when the player's character touches itself, another player, a boundary, or a hazard. When the player's character dies, the game ends.
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-* A game board may have tunnels or passageways which allow a player's character to enter one location in the game world and appear elsewhere in the game world. Tunnels and passageways are optional. Bonuses or penalties may be assigned for using passageways and tunnels.
+![Snake+SFML][product-screenshot]
+![Snake+SFML][product-screenshot2]
+![Snake+SFML][product-screenshot3]
 
-* A boundary is defined as the limits of the game board and may not be touched or crossed by a player. Food may not appear on a boundary.
+"Snake in Python" is a clone of the classic game popularized by Nokia. Eat fruit to increase your score. However, as you eat your snake grows and avoiding your growing body becomes more difficult. See how long your snake can grow, YOLO.
 
-* Food appears on the game board at regular intervals. Eating the food elongates the player's character. There must be a minimum of one food type. There may be other food types which increase the player character's size, shape, color, etc. Eating food scores points.
 
-* The player may move their character in four orthogonal directions (up, down, left, right). The player's character behaves like a train which follows the same path until it reaches a point on the game board where a direction was changed. (See https://playsnake.org/ for a visual example of how the snake moves.)
+### Built With
 
-* The player has only one life. Should the player's game end, the player must start over.
+* [Python3](https://www.python.org/downloads/)
+* [Pygame2](https://www.pygame.org/news)
 
-* The player accrues points for every 3 seconds of game play. You may determine the number of points and if there are bonus points should a player reach in-game milestones.
 
-* The game presents a start up screen which summarizes the rules and controls. From the start up screen a player may start a new game. Other optional game play options may be presented on the start up screen such as the high score leaderboard, settings, etc.
 
-* The player's points are displayed somewhere on the screen and the display must not interfere with game play.
+<!-- GETTING STARTED -->
+## Getting Started
 
-* The date, the total time played, and the score is saved to a JSON or Pickle file at the end of every game.
+To get a local copy up and running follow these simple steps.
 
-* A leaderboard of high scores is presented at the end of every game.
+### Prerequisites
 
-* The option to play again is given at the end of every game.
+* [Python3](https://www.python.org/downloads/)
+* [Pygame2](https://www.pygame.org/news)
 
-* A soundtrack and sound effects are optional. You are encouraged to incorporate music and effects into your game.
+### Installation
+ 
+1. Clone the repo
+```sh
+https://github.com/mshafae-spring-2021/snake-Tello-.git
+```
+2. Set up your environment or venv 
+3. While in your environment terminal run pip -r install requirements.txt
+4. Call Python Snake\root\directory\path\ from environment terminal
 
-* The main function must be called from the file named `snake.py`.
+<!-- CONTROLS -->
+## Controls
+* Arrows - Steer Snake
 
-* You must conform to [PEP-8](https://www.python.org/dev/peps/pep-0008/). Use [pylint](https://www.pylint.org/) and [pycodestyle](https://pypi.org/project/pycodestyle/) to conform to [PEP-8](https://www.python.org/dev/peps/pep-0008/).
+<!-- ROADMAP -->
+## Roadmap
 
-Since this is the first time we are using Pygame, remember that there are a number of excellent resources available to you.
+See the [open issues](https://github.com/mshafae-spring-2021/snake-Tello-/issues) for a list of proposed features (and known issues).
 
-The first is the Pygame documentation and the Pygame source code. Within the Pygame source code is a directory of examples which can illustrate fundamental Pygame features and how to use them. Learning to navigate the source code and the system's documentation is an invaluable skill to develop.
 
-The second is Al Sweigart's book Making Games with Python & Pygame. The full text of the book is available online at no cost and available for purchase through retailers. The book is very brief and focuses on building one game per chapter. Chapter 6 builds a snake clone named Wormy.py. The source code for all the games in the book are available from GitHub. 
 
-You are encouraged to read through the source code by Mr. Sweigart and others who have written excellent snake game clones. Be warned that you are tasked with creating your own game. Copying and pasting or starting from someone else's game is not ethical and strictly forbidden.
+<!-- CONTRIBUTING -->
+## Contributing
 
-Start from scratch. Make your own game. Make something you'll be proud to share with family and friends.
+Contributions are what make the open source community such an amazing place to be **learn**, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-# Rubric
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-* Functionality (6 points): Your submission shall be assessed for the appropriate constructs and strategies to address the exercise. A program the passes the instructor's tests completely receives full marks. A program that partially passes the instructors tests receives partial-marks. A program that fails the majority or all the tests receives no marks.
 
-* Format & Readability (4 point): Your submission shall be assessed by checking whether your code passess the style and format check, as well as how well it follows the proper naming conventions, and internal documentation guidelines. Git log messages are an integral part of how readable your project is. Failure to include a header forfeits all marks.
+
+<!-- CONTACT -->
+## Contact
+
+Josh Lollis - lollisjosh@csu.fullerton.edu
+
+Project Link: https://github.com/Tello-/Snake-SFML
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/Tello-/Snake-SFML.svg?style=flat-square
+[contributors-url]: https://github.com/Tello-/Snake-SFML/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Tello-/Snake-SFML.svg?style=flat-square
+[forks-url]: https://github.com/Tello-/Snake-SFML/network/members
+[stars-shield]: https://img.shields.io/github/stars/Tello-/Snake-SFML.svg?style=flat-square
+[stars-url]: https://github.com/Tello-/Snake-SFML/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Tello-/Snake-SFML.svg?style=flat-square
+[issues-url]: https://github.com/Tello-/Snake-SFML/issues
+[license-shield]: https://img.shields.io/github/license/Tello-/Snake-SFML.svg?style=flat-square
+[license-url]: https://github.com/Tello-/Snake-SFML/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/lollisjosh
+[product-screenshot]: https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/TitleScreen.JPG
+[product-screenshot2]: https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/Bones2.JPG
+[product-screenshot3]:https://github.com/Tello-/Snake-SFML/blob/master/Screenshots/HighScoreScreen.JPG
