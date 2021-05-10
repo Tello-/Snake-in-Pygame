@@ -112,22 +112,28 @@ Contributions are what make the open source community such an amazing place to b
 
 Josh Lollis - lollisjosh@csu.fullerton.edu
 
-Project Link: https://github.com/Tello-/Snake-SFML
+Project Link: https://github.com/Tello-/snake-Tello-
 
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/Tello-/Snake-SFML.svg?style=flat-square
-[contributors-url]: https://github.com/Tello-/Snake-SFML/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Tello-/Snake-SFML.svg?style=flat-square
-[forks-url]: https://github.com/Tello-/Snake-SFML/network/members
-[stars-shield]: https://img.shields.io/github/stars/Tello-/Snake-SFML.svg?style=flat-square
-[stars-url]: https://github.com/Tello-/Snake-SFML/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Tello-/Snake-SFML.svg?style=flat-square
-[issues-url]: https://github.com/Tello-/Snake-SFML/issues
-[license-shield]: https://img.shields.io/github/license/Tello-/Snake-SFML.svg?style=flat-square
-[license-url]: https://github.com/Tello-/Snake-SFML/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/Tello-/snake-Tello-.svg?style=flat-square
+[contributors-url]: https://github.com/mshafae-spring-2021/snake-Tello-/graphs/contributors
+
+[forks-shield]: https://img.shields.io/github/forks/Tello-/snake-Tello-.svg?style=flat-square
+[forks-url]: https://github.com/mshafae-spring-2021/snake-Tello-/network/members
+
+[stars-shield]: https://img.shields.io/github/stars/Tello-/snake-Tello-.svg?style=flat-square
+[stars-url]: https://github.com/mshafae-spring-2021/snake-Tello-/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/Tello-/snake-Tello-.svg?style=flat-square
+[issues-url]: https://github.com/mshafae-spring-2021/snake-Tello-/issues
+
+[license-shield]: https://img.shields.io/github/license/Tello-/snake-Tello-.svg?style=flat-square
+[license-url]: https://github.com/Tello-/snake-Tello-/master/LICENSE.txt
+
+
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/lollisjosh
 [product-screenshot]: https://github.com/mshafae-spring-2021/snake-Tello-/blob/main/splash_screenshot.PNG
