@@ -6,7 +6,6 @@ import pygame
 from pygame import Surface, surface
 
 from pygame import time
-from pygame.constants import WINDOWHIDDEN
 from config import *
 from color import *
 from direction import Direction
@@ -47,15 +46,12 @@ class Splash_Scene(Scene):
         self.ANYKEY_FONT = pygame.font.Font(logoFontFileName, 25)
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
         self.LOGO_RECT = pygame.Rect(55,20, 0, 0)
-        #self.LOGO_RECT.center = (0,0)
 
         self.CONTROL_TEXT = self.CONTROL_FONT.render("Turn Snake : Arrows", True, [255,255,255] )
         self.CONTROL_RECT = pygame.Rect(80,300, 0, 0)
-        #self.CONTROL_RECT.topleft = (0, WINDOW_HEIGHT * .50)
 
         self.ANYKEY_TEXT = self.ANYKEY_FONT.render("Any key to continue...", True, [255,255,255] )
         self.ANYKEY_RECT = pygame.Rect(120,500, 0, 0)
-        #self.ANYKEY_RECT.topleft = (15, WINDOW_HEIGHT * .65)
 
 
         self.FRAME_SPEED = 8
@@ -342,34 +338,3 @@ class Play_Scene(Scene):
                 i += 1
             return False
 
-class GameOver_Scene(Scene):
-    def __init__(self, size:tuple, coord:tuple = (0,0)):
-        super().__init__(size, coord)
-
-        self.FRAME_SPEED = 10
-        self.BG_WIDTH = size[0]
-        self.BG_HEIGHT = size[1]
-        self._BG_LAYER = pygame.Surface((self.BG_WIDTH, self.BG_HEIGHT))
-
-        self._initGameOverBG(GO_BG_COLOR, self._BG_LAYER)      
-
-    def _process_input(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self._shouldQuit = True
-                quit() # for now for debugging purposes later encapsulate
-    def _update_state(self)->bool:
-        pass
-    def _render_scene(self, window:Surface):
-        window.blit(self._BG_LAYER, (0,0))
-        pygame.display.flip()
-    def _end_scene(self):
-        pass
-    def _desired_frame_speed(self) -> int:
-        return self.FRAME_SPEED
-
-    def _initGameOverBG(self, rgb, surface):
-        pygame.draw.rect(surface, rgb, [0, 0, self.BG_WIDTH, self.BG_HEIGHT], 0)
-
-    def _initGameOverText(self):
-        pass

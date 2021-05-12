@@ -1,7 +1,7 @@
 import pygame
 from pygame import time
 import config
-from scene import Scene, Splash_Scene, Play_Scene, GameOver_Scene
+from scene import Scene, Splash_Scene, Play_Scene
 
 class Snake_Engine:
     def __init__(self):
@@ -25,7 +25,7 @@ class Snake_Engine:
         self._window.fill([0,0,0])
         if len(self._scene_queue) > 0:
             del self._scene_queue[:]
-        self._scene_queue = [(Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), (Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), (GameOver_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT)))]
+        self._scene_queue = [(Splash_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))), (Play_Scene((config.WINDOW_WIDTH, config.WINDOW_HEIGHT)))]
 
         pygame.display.flip()
     
