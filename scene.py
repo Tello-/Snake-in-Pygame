@@ -93,8 +93,6 @@ class Play_Scene(Scene):
         super().__init__(size, coord)
         
         self.FRAME_SPEED = 10
-        
-        self._play_over = False
 
         self._TIMED_POINT_INCREASE = pygame.USEREVENT + 1
         self._TIMED_POINT_INCREASE_EVENT = Event(self._TIMED_POINT_INCREASE)
@@ -338,3 +336,6 @@ class Play_Scene(Scene):
                 i += 1
             return False
 
+    def _Gameover(self):
+        'Run for gameover highscore screen'
+        pass
