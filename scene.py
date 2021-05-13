@@ -18,8 +18,6 @@ class Scene:
 
     def __init__(self, size:tuple, coord:tuple):
         self._scene_surface = Surface(size)
-        self._scene_clock = time.Clock()
-        self._shouldQuit = False
         self._sceneOver = False        
 
     def _process_input(self):
@@ -81,7 +79,6 @@ class Splash_Scene(Scene):
         return False
 
     def _render_scene(self, window:Surface):
-        #pygame.draw.rect(self._scene_surface, self.LOGO_CURRENT_COLOR, self.LOGO_RECT, True)
         self.LOGO_TEXT = self.LOGO_FONT.render("PySnake", True, LOGO_COLORS[self.LOGO_CURRENT_COLOR])
         self._scene_surface.blit(self.LOGO_TEXT, self.LOGO_RECT)
         self._scene_surface.blit(self.CONTROL_TEXT, self.CONTROL_RECT)
@@ -160,7 +157,9 @@ class Play_Scene(Scene):
         self._initFilledBG(BG_COLOR, self._GRID_LAYER)
         self._initGridOverlay(FG_COLOR, self._GRID_LAYER)
 
-        
+    def get_points(self)-> int:
+         return self._points
+
     def _desired_frame_speed(self) -> int:
         return self.FRAME_SPEED
     def _process_input(self):
@@ -224,6 +223,7 @@ class Play_Scene(Scene):
         
         if self._hitDetected:
             time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
+            #TODO Instead call gameover script to run and display score and high scores/play again
             return True
         
         if self._pointTimerExpired and not self._hitDetected:                
