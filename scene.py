@@ -51,6 +51,7 @@ class Splash_Scene(Scene):
         self.ANYKEY_TEXT = self.ANYKEY_FONT.render("Any key to continue...", True, [255,255,255] )
         self.ANYKEY_RECT = pygame.Rect(120,500, 0, 0)
 
+        self._shouldQuit = False
 
         self.FRAME_SPEED = 8
         
@@ -128,8 +129,9 @@ class Play_Scene(Scene):
         self._score_text_shadow_rect = self._score_text_shadow.get_rect()
         self._score_text_shadow_rect.update(WINDOW_WIDTH * .05 - 5, WINDOW_HEIGHT * .90, self._score_text_shadow_rect.width, self._score_text_shadow_rect.height)
         
-        
-        
+        self._gameover_text = self.SCORE_FONT.render("Game Over", True, SCORE_TEXT_COLOR)
+        self._gameover_text_rect = self._gameover_text.get_rect()
+        self._gameover_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * .40)
 
         self._GRID_LAYER = pygame.Surface((self.BG_WIDTH,self.BG_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((self.PLAYER_WIDTH, self.PLAYER_HEIGHT))
@@ -145,7 +147,8 @@ class Play_Scene(Scene):
         self.apple = None # coord to hold where apple is at once it is known
 
 
-        self._gameover = False        
+        self._gameover = False
+        self._gameover_over = False        
         self._isRunning = True
         self._hasBegun = False
         self._timerBegun = False
@@ -162,6 +165,9 @@ class Play_Scene(Scene):
         return self.FRAME_SPEED
     def _process_input(self):
         for event in pygame.event.get():
+            if self._gameover:
+                if event.type == pygame.KEYUP:
+                    self._gameover_over = True
             if event.type == pygame.QUIT:
                 self._shouldQuit = True
                 quit() # for now for debugging purposes
@@ -189,6 +195,14 @@ class Play_Scene(Scene):
                 self._hasBegun = True
             
     def _update_state(self) ->bool:
+
+        if self._gameover:
+            if self._gameover_over:
+                return True # return true to engine that we're done with the scene
+            else:
+                self._initGameOverText()
+                return False
+
         if self._hasBegun and not self._timerBegun:
             self._timerBegun = True
             time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 3000)   
@@ -222,7 +236,7 @@ class Play_Scene(Scene):
         if self._hitDetected:
             time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
             #TODO Instead call gameover script to run and display score and high scores/play again
-            return True
+            self._gameover = True
         
         if self._pointTimerExpired and not self._hitDetected:                
             self._points += 1
@@ -231,6 +245,12 @@ class Play_Scene(Scene):
         return False # "state not done"
         
     def _render_scene(self, window:Surface):
+        if self._gameover:
+            window.fill(GO_BG_COLOR)
+            window.blit(self._gameover_text, self._gameover_text_rect)
+            pygame.display.flip()
+            return
+        
         window.blit(self._GRID_LAYER, (0,0))
         self._drawSnake(window)
         if self.apple != None:
@@ -241,7 +261,6 @@ class Play_Scene(Scene):
         window.blit(self._SCORE_PANEL_LAYER, (0, self.BG_HEIGHT))
         window.blit(self._score_text_shadow, self._score_text_shadow_rect)    
         window.blit(self._score_text, self._score_text_rect)
-
         
         pygame.display.flip()
 
@@ -336,6 +355,6 @@ class Play_Scene(Scene):
                 i += 1
             return False
 
-    def _Gameover(self):
-        'Run for gameover highscore screen'
-        pass
+    def _initGameOverText(self):
+        'Use this function to set the game over text for game over view'
+        self._gameover_text = self.SCORE_FONT.render("Game Over", True, SCORE_TEXT_COLOR)
