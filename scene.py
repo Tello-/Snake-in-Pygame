@@ -237,6 +237,7 @@ class Play_Scene(Scene):
             time.set_timer(self._TIMED_POINT_INCREASE_EVENT, 0)
             #TODO Instead call gameover script to run and display score and high scores/play again
             self._gameover = True
+            self._score_text_rect.center = (WINDOW_WIDTH *.49, WINDOW_HEIGHT / 2) # TODO make this more dynamic so the text actually centers regardless of length
         
         if self._pointTimerExpired and not self._hitDetected:                
             self._points += 1
