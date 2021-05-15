@@ -6,6 +6,7 @@ import pygame
 from pygame import Surface, surface
 
 from pygame import time
+from pygame.constants import WINDOWHIDDEN
 from config import *
 from color import *
 from direction import Direction
@@ -119,6 +120,9 @@ class Play_Scene(Scene):
         self.SCORE_FONT = pygame.font.SysFont("", 64)
         self.SCORE_SHADOW_FONT = pygame.font.SysFont("", 64)
         
+        self._gameover_text = self.SCORE_FONT.render("Game Over", True, SCORE_TEXT_COLOR)
+        self._gameover_text_rect = self._gameover_text.get_rect()
+        self._gameover_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * .40)
 
         self._points = 0
         self._score_text = self.SCORE_FONT.render("Points: {}".format(self._points), True, SCORE_TEXT_COLOR)
@@ -129,9 +133,15 @@ class Play_Scene(Scene):
         self._score_text_shadow_rect = self._score_text_shadow.get_rect()
         self._score_text_shadow_rect.update(WINDOW_WIDTH * .05 - 5, WINDOW_HEIGHT * .90, self._score_text_shadow_rect.width, self._score_text_shadow_rect.height)
         
-        self._gameover_text = self.SCORE_FONT.render("Game Over", True, SCORE_TEXT_COLOR)
-        self._gameover_text_rect = self._gameover_text.get_rect()
-        self._gameover_text_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * .40)
+        
+
+        dirname = os.path.dirname(__file__)
+        logoFontFileName = os.path.join(dirname, 'alba.super.ttf')
+        self.LOGO_FONT = pygame.font.Font(logoFontFileName,100 )
+        self.ANYKEY_FONT = pygame.font.Font(logoFontFileName, 25)
+        self.ANYKEY_TEXT = self.ANYKEY_FONT.render("Any key to continue...", True, ACTIVE_SCHEME[2] )
+        self.ANYKEY_RECT = pygame.Rect(self.ANYKEY_TEXT.get_rect())        #(120,500, 0, 0)
+        self.ANYKEY_RECT.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT * .90)
 
         self._GRID_LAYER = pygame.Surface((self.BG_WIDTH,self.BG_HEIGHT))
         self._SNAKE_LAYER = pygame.Surface((self.PLAYER_WIDTH, self.PLAYER_HEIGHT))
@@ -250,6 +260,7 @@ class Play_Scene(Scene):
             window.fill(GO_BG_COLOR)
             window.blit(self._gameover_text, self._gameover_text_rect)
             window.blit(self._score_text, self._score_text_rect)
+            window.blit(self.ANYKEY_TEXT, self.ANYKEY_RECT)
             pygame.display.flip()
             return
         
