@@ -248,6 +248,7 @@ class Play_Scene(Scene):
         if self._gameover:
             window.fill(GO_BG_COLOR)
             window.blit(self._gameover_text, self._gameover_text_rect)
+            window.blit(self._score_text, self._score_text_rect)
             pygame.display.flip()
             return
         
