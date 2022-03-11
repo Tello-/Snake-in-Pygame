@@ -64,7 +64,7 @@ To get a local copy up and running follow these simple steps.
 https://github.com/TelloVisionGames/Snake-in-Pygame.git
 ```
 2. Set up your environment or venv https://docs.python.org/3/library/venv.html
-3. While in your environment terminal run pip -r install requirements.txt
+3. While in your environment terminal run ``` pip -r install path\to\requirements.txt ```
 4. Call Python Snake\root\directory\path\ from environment terminal
 
 <!-- CONTROLS -->
