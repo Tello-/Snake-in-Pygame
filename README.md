@@ -61,7 +61,7 @@ To get a local copy up and running follow these simple steps.
  
 1. Clone the repo
 ```sh
-https://github.com/mshafae-spring-2021/snake-Tello-.git
+https://github.com/TelloVisionGames/Snake-in-Pygame.git
 ```
 2. Set up your environment or venv 
 3. While in your environment terminal run pip -r install requirements.txt
